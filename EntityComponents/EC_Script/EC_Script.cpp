@@ -5,6 +5,7 @@
 #include <QList>
 #include "MemoryLeakCheck.h"
 #include "EC_Script.h"
+#include "ScriptAsset.h"
 #include "IScriptInstance.h"
 
 #include "IAttribute.h"
@@ -93,6 +94,7 @@ void EC_Script::HandleAttributeChanged(IAttribute* attribute, AttributeChange::T
     {
         if (!scriptRef.Get().ref.isEmpty())
             scriptAsset->HandleAssetRefChange(attribute);
+
         else // If the script ref is empty we need to unload script instance.
             SetScriptInstance(0);
     }

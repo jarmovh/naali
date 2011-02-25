@@ -7,7 +7,7 @@
 #include "IModule.h"
 #include "ModuleLoggingFunctions.h"
 #include "PythonQtScriptingConsole.h"
-#include "ScriptAsset.h"
+#include "ScriptFwd.h"
 
 #include <QObject>
 #include <QList>

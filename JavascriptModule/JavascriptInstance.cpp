@@ -13,6 +13,7 @@
 #include "ScriptMetaTypeDefines.h"
 #include "NaaliCoreTypeDefines.h"
 #include "EC_Script.h"
+#include "ScriptAsset.h"
 #include "IModule.h"
 #include "AssetAPI.h"
 #include "IAssetProvider.h" //to check if the code was loaded from a local or remote storage

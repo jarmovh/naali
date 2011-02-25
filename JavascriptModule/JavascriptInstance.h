@@ -11,7 +11,7 @@
 #include "IScriptInstance.h"
 #include "ForwardDefines.h"
 #include "AssetFwd.h"
-#include "ScriptAsset.h"
+#include "ScriptFwd.h"
 
 #include <QtScript>
 //#ifndef QT_NO_SCRIPTTOOLS
@@ -59,6 +59,10 @@ public:
     */
     void SetOwnerComponent(const ComponentPtr &owner) { owner_ = owner; }
 
+    /// If the script content is loaded using the Asset API, this points to the asset that is loaded.
+    //made public so that can check in JavascriptModule::ScriptAssetChanged if this actually changed.
+    ScriptAssetPtr scriptRef_; 
+
 public slots:
     /// Loads a given script in engine. This function can be used to create a property as you could include js-files.
     /** Multiple inclusion of same file is prevented. (by using simple string compare)
@@ -81,9 +85,6 @@ private:
 
     // The script content for a JavascriptInstance is loaded either using the Asset API or 
     // using an absolute path name from the local file system.
-
-    /// If the script content is loaded using the Asset API, this points to the asset that is loaded.
-    ScriptAssetPtr scriptRef_; 
 
     /// If the script content is loaded directly from local file, this points to the actual script content.  
     QString program_;

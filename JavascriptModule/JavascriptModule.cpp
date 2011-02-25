@@ -189,9 +189,21 @@ void JavascriptModule::ScriptAssetChanged(ScriptAssetPtr newScript)
 
     // First clean up any previous running script from EC_Script, if any exists.
     // (but only clean up scripts of our script type, other engines can clean up theirs)
-    if (dynamic_cast<JavascriptInstance*>(sender->GetScriptInstance()))
-        sender->SetScriptInstance(0);
-
+    JavascriptInstance* instance = dynamic_cast<JavascriptInstance*>(sender->GetScriptInstance());
+    if (instance)
+    {
+        if (instance->scriptRef_->Name() != newScript->Name())
+        {
+            sender->SetScriptInstance(0);
+        }
+        else
+        {
+            return; //didn't actually change - the signal was triggered by a load to another component
+            //.. or a change to the source code, i guess we should check the hash here or something
+            //IAsset already has ContentHash() but that is currently unused. perhaps start using for scripts
+            //.. unless we come up with another way to distinguish between loading to own component vs. other components
+        }
+    }
     // EC_Script can host scripts of different types, and all script engines listen to asset changes.
     // First we'll need to validate whether the user even specified a script file that's QtScript.
     QString scriptType = sender->type.Get().trimmed().toLower();
@@ -225,7 +237,9 @@ void JavascriptModule::ScriptAssetChanged(ScriptAssetPtr newScript)
 void JavascriptModule::ComponentAdded(Scene::Entity* entity, IComponent* comp, AttributeChange::Type change)
 {
     if (comp->TypeName() == EC_Script::TypeNameStatic())
+    {
         connect(comp, SIGNAL(ScriptAssetChanged(ScriptAssetPtr)), this, SLOT(ScriptAssetChanged(ScriptAssetPtr)), Qt::UniqueConnection);
+    }
 }
 
 void JavascriptModule::ComponentRemoved(Scene::Entity* entity, IComponent* comp, AttributeChange::Type change)

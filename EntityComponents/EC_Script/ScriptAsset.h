@@ -41,6 +41,4 @@ private slots:
     void ParseReferences();
 };
 
-typedef boost::shared_ptr<ScriptAsset> ScriptAssetPtr;
-
 #endif

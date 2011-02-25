@@ -7,7 +7,7 @@
 #include "Declare_EC.h"
 #include "AssetReference.h"
 #include "AssetFwd.h"
-#include "ScriptAsset.h"
+#include "ScriptFwd.h"
 
 class IScriptInstance;
 

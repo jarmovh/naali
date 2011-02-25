@@ -13,7 +13,7 @@
 #include "AttributeChangeType.h"
 #include "ScriptServiceInterface.h"
 #include "AssetFwd.h"
-#include "ScriptAsset.h"
+#include "ScriptFwd.h"
 
 #include <QObject>
 
