@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=realXtend Naali
+GenericName=Virtual worlds viewer
+Comment=Browse 3D virtual worlds
+Exec=bash /opt/realxtend-naali/run-linux.sh
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/naali.png
+Categories=Network;
+StartupNotify=false
