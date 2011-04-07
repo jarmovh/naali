@@ -8,6 +8,7 @@
 #include "ModuleLoggingFunctions.h"
 #include "PythonQtScriptingConsole.h"
 #include "InputFwd.h"
+#include "SceneFwd.h"
 
 #include <QObject>
 #include <QList>
@@ -133,7 +134,7 @@ namespace PythonScript
         /// Returns the currently initialized PythonScriptModule.
         static PythonScriptModule *GetInstance();
 
-        Scene::ScenePtr GetScenePtr() const { return framework_->GetDefaultWorldScene(); }
+        Scene::ScenePtr GetScenePtr() const;
         PyObject* WrapQObject(QObject* qobj) const;
 
         PyObject* entity_create(entity_id_t ent_id); //, Scene::EntityPtr entity);

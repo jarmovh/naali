@@ -8,8 +8,11 @@
 #include "EC_Placeable.h"
 #include "Entity.h"
 #include "RexNetworkUtils.h"
+#include "LoggingFunctions.h"
 
 #include <Ogre.h>
+
+DEFINE_POCO_LOGGING_FUNCTIONS("EC_Placeable")
 
 using namespace OgreRenderer;
 
@@ -39,17 +42,20 @@ EC_Placeable::EC_Placeable(IModule* module) :
     visible(this, "Visible", true),
     position(this, "Position", QVector3D(0,0,0)),
     scale(this, "Scale", QVector3D(1,1,1))
-
 {
     // Enable network interpolation for the transform
     static AttributeMetadata transAttrData;
+    static AttributeMetadata nonDesignableAttrData;
     static bool metadataInitialized = false;
     if(!metadataInitialized)
     {
         transAttrData.interpolation = AttributeMetadata::Interpolate;
+        nonDesignableAttrData.designable = false;
         metadataInitialized = true;
     }
     transform.SetMetadata(&transAttrData);
+    position.SetMetadata(&nonDesignableAttrData);
+    scale.SetMetadata(&nonDesignableAttrData);
 
     RendererPtr renderer = renderer_.lock();
     Ogre::SceneManager* scene_mgr = renderer->GetSceneManager();
@@ -61,7 +67,7 @@ EC_Placeable::EC_Placeable(IModule* module) :
     link_scene_node_->setFixedYawAxis(true, Ogre::Vector3::UNIT_Z);
 
     // Hook the transform attribute change
-    connect(this, SIGNAL(OnAttributeChanged(IAttribute*, AttributeChange::Type)),
+    connect(this, SIGNAL(AttributeChanged(IAttribute*, AttributeChange::Type)),
         SLOT(HandleAttributeChanged(IAttribute*, AttributeChange::Type)));
 
     connect(this, SIGNAL(ParentEntitySet()), SLOT(RegisterActions()));
@@ -100,7 +106,7 @@ void EC_Placeable::SetParent(ComponentPtr placeable)
 {
     if ((placeable.get() != 0) && (!dynamic_cast<EC_Placeable*>(placeable.get())))
     {
-        OgreRenderingModule::LogError("Attempted to set parent placeable which is not " + TypeNameStatic().toStdString());
+        LogError("Attempted to set parent placeable which is not of type \"" + TypeNameStatic() +"\"!");
         return;
     }
     DetachNode();
@@ -164,10 +170,11 @@ QVector3D EC_Placeable::GetQLocalZAxis() const
 
 void EC_Placeable::SetPosition(const Vector3df &pos)
 {
-   assert(RexTypes::IsValidPositionVector(pos));
-   
-   if (!RexTypes::IsValidPositionVector(pos))
+   if (!pos.IsFinite())
+   {
+        LogError("EC_Placeable::SetPosition called with a vector that is not finite!");
         return;
+   }
     // link_scene_node_->setPosition(Ogre::Vector3(pos.x, pos.y, pos.z));
     Transform newtrans = transform.Get();
     newtrans.SetPos(pos.x, pos.y, pos.z);
@@ -237,7 +244,10 @@ void EC_Placeable::SetScale(const Vector3df& newscale)
 void EC_Placeable::AttachNode()
 {
     if (renderer_.expired())
+    {
+        LogError("EC_Placeable::AttachNode: No renderer available to call this function!");
         return;
+    }
     RendererPtr renderer = renderer_.lock();
         
     if (attached_)
@@ -263,7 +273,10 @@ void EC_Placeable::AttachNode()
 void EC_Placeable::DetachNode()
 {
     if (renderer_.expired())
+    {
+        LogError("EC_Placeable::DetachNode: No renderer available to call this function!");
         return;
+    }
     RendererPtr renderer = renderer_.lock();
         
     if (!attached_)
@@ -360,11 +373,11 @@ void EC_Placeable::HandleAttributeChanged(IAttribute* attribute, AttributeChange
 {
     if (attribute == &transform)
     {
-        if ((!link_scene_node_) || (!scene_node_))
+        if (!link_scene_node_ || !scene_node_)
             return;
         
         const Transform& trans = transform.Get();
-        if (RexTypes::IsValidPositionVector(trans.position))
+        if (trans.position.IsFinite())
         {
             link_scene_node_->setPosition(trans.position.x, trans.position.y, trans.position.z);
         }
@@ -373,7 +386,7 @@ void EC_Placeable::HandleAttributeChanged(IAttribute* attribute, AttributeChange
                           DEGTORAD * trans.rotation.y,
                           DEGTORAD * trans.rotation.z);
 
-        if (RexTypes::IsValidOrientation(orientation))
+        if (orientation.IsFinite())
             link_scene_node_->setOrientation(Ogre::Quaternion(orientation.w, orientation.x, orientation.y, orientation.z));
         else
             OgreRenderingModule::LogError("EC_Placeable: transform attribute changed, but orientation not valid!");

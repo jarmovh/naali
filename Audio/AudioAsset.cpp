@@ -9,8 +9,14 @@
 #include "OggVorbisLoader.h"
 
 #include <QString>
+
+#ifndef Q_WS_MAC
 #include <AL/al.h>
 #include <AL/alc.h>
+#else
+#include <al.h>
+#include <alc.h>
+#endif
 
 DEFINE_POCO_LOGGING_FUNCTIONS("AudioAsset")
 
@@ -125,4 +131,9 @@ bool AudioAsset::CreateBuffer()
     } 
     
     return true;
+}
+
+bool AudioAsset::IsLoaded() const
+{
+    return handle != 0;
 }

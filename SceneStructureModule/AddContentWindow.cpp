@@ -12,7 +12,7 @@
 #include "SceneStructureModule.h"
 #include "TreeWidgetUtils.h"
 
-#include "NaaliUi.h"
+#include "UiAPI.h"
 #include "NaaliMainWindow.h"
 #include "Framework.h"
 #include "AssetAPI.h"
@@ -144,7 +144,18 @@ AddContentWindow::AddContentWindow(Foundation::Framework *fw, const Scene::Scene
 {
     setWindowModality(Qt::ApplicationModal/*Qt::WindowModal*/);
     setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(" "); //setWindowTitle(tr("Add Content")); imo the add content name is kind of not needed
+    setWindowTitle("Entity And Asset Import");
+
+    // If not parent was given, lets make our main window the parent
+    // and set the window flags to match the other tundra dialogs/windows
+    if (!parent && framework->Ui()->MainWindow())
+    {
+        setParent(framework->Ui()->MainWindow());
+        setWindowFlags(Qt::Tool);
+    }
+    else if (parent && (parent == framework->Ui()->MainWindow()))
+        setWindowFlags(Qt::Tool);
+
     QPixmap nullIcon(16,16); // do a null icon to hide the default ugly one
     nullIcon.fill(Qt::transparent);
     setWindowIcon(nullIcon);
@@ -292,6 +303,12 @@ AddContentWindow::AddContentWindow(Foundation::Framework *fw, const Scene::Scene
     failedUploads_ = 0;
     successfullUploads_ = 0;
     totalUploads_ = 0;
+/*
+    QPrinter printer;
+    QPainter painter;
+    painter.begin(&printer);
+    painter.drawImage()
+*/
 }
 
 AddContentWindow::~AddContentWindow()
@@ -399,13 +416,13 @@ void AddContentWindow::AddEntities(const QList<EntityDesc> &entityDescs)
     int fullHeight = entityTreeWidget->header()->height();
     fullHeight += (entityTreeWidget->sizeHintForRow(0)+5) * entityTreeWidget->model()->rowCount();
     int halfDeskHeight = QApplication::desktop()->screenGeometry().height()/2;
-    if (fullHeight < halfDeskHeight-50)
+    if (fullHeight < halfDeskHeight-300)
     {
         entityTreeWidget->setMinimumHeight(fullHeight);
     }
     else
     {
-        entityTreeWidget->setMinimumHeight(halfDeskHeight - 100);
+        entityTreeWidget->setMinimumHeight(halfDeskHeight - 300);
     }
 }
 

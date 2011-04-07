@@ -10,6 +10,7 @@
 #include "EC_OgreCustomObject.h"
 #include "IModule.h"
 #include "Framework.h"
+#include "SceneAPI.h"
 #include "Entity.h"
 #include "EC_Placeable.h"
 #include "SceneManager.h"
@@ -49,7 +50,7 @@ EC_VideoSource::EC_VideoSource(IModule *module):
     player_(0),
     video_widget_(0),
     media_object_(0),
-    video_request_tag_(0),
+//    video_request_tag_(0),
     error_label_(0)
 {
     // Init metadata for attributes
@@ -72,7 +73,7 @@ EC_VideoSource::EC_VideoSource(IModule *module):
 
     connect(ready_poller_, SIGNAL(timeout()), SLOT(Play()));
     connect(this, SIGNAL(ParentEntitySet()), SLOT(UpdateSignals()));
-    connect(this, SIGNAL(OnAttributeChanged(IAttribute*, AttributeChange::Type)), SLOT(AttributeUpdated(IAttribute*)));
+    connect(this, SIGNAL(AttributeChanged(IAttribute*, AttributeChange::Type)), SLOT(OnAttributeUpdated(IAttribute*)));
 
     // Register as a event listener
     EventManager *event_manager = framework_->GetEventManager().get();
@@ -202,7 +203,7 @@ void EC_VideoSource::InitializePhonon()
     }
 }
 
-void EC_VideoSource::AttributeUpdated(IAttribute *attribute)
+void EC_VideoSource::OnAttributeUpdated(IAttribute *attribute)
 {
     if (!video_widget_ || !media_object_)
         return;
@@ -457,7 +458,7 @@ void EC_VideoSource::UpdateSignals()
  
     // The magic number of instances before certain unstability is two, 
     // lets not let instantiate more phonon players than that for now
-    Scene::EntityList list = framework_->GetDefaultWorldScene()->GetEntitiesWithComponent(TypeNameStatic());
+    Scene::EntityList list = GetFramework()->Scene()->GetDefaultScene()->GetEntitiesWithComponent(TypeNameStatic());
     if (list.size() < 2)
     {
         LogDebug(QString("Launching video ec in %1 ms").arg(rand_time).toStdString());

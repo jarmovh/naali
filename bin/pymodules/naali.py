@@ -17,10 +17,9 @@ Core API
 """
 frame = _naali.Frame()
 console = _naali.Console()
-input = _naali.GetInput()
+input = _naali.Input()
 audio = _naali.Audio()
-ui = _naali.UiService() #the UI core object does not implement the old uiservice stuff yet
-uicore = _naali.Ui()
+ui = _naali.Ui()
 debug = _naali.Debug()
 
 """Aka. Tundra
@@ -51,7 +50,7 @@ def getScene(name):
     return _pythonscriptmodule.GetScene(name)
     
 def getDefaultScene():
-    return _naali.DefaultScene()
+    return _naali.Scene().GetDefaultSceneRaw()
     
 def createEntity(comptypes = [], localonly = False, sync = True, temporary = False):
     s = getDefaultScene()

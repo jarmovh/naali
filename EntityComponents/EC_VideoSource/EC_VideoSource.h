@@ -69,7 +69,7 @@ public slots:
 private slots:
     void InitializePhonon();
     void UpdateSignals();
-    void AttributeUpdated(IAttribute *attribute);
+    void OnAttributeUpdated(IAttribute *attribute);
     /// Registers the action this EC provides to the parent entity, when it's set.
     void RegisterActions();
     void UpdateCanvas();
@@ -107,7 +107,6 @@ private:
     QTimer *ready_poller_;
     QLabel *error_label_;
 
-    request_tag_t video_request_tag_;
     event_category_id_t asset_event_category_;
 };
 

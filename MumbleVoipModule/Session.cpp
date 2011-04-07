@@ -12,6 +12,7 @@
 #include "ModuleManager.h"    // for avatar info
 #include "WorldLogicInterface.h" // for avatar position
 #include "Entity.h" // for avatar position
+#include "SceneAPI.h"
 #include "SceneManager.h"
 #include "User.h"
 #include "Channel.h"
@@ -443,7 +444,7 @@ namespace MumbleVoip
 
     QString Session::GetAvatarFullName(QString uuid) const
     {
-        Scene::ScenePtr current_scene = framework_->GetDefaultWorldScene();
+        Scene::ScenePtr current_scene = framework_->Scene()->GetDefaultScene();
         if (current_scene)
         {
             for(Scene::SceneManager::iterator iter = current_scene->begin(); iter != current_scene->end(); ++iter)
@@ -692,15 +693,15 @@ namespace MumbleVoip
         emit Communications::InWorldVoice::SessionInterface::ChannelListChanged(GetChannels());
     }
 
-    void Session::AddChannel(QString name, QString username, QString server)
+    void Session::AddChannel(QString name, QString username, QString server, QString password, QString version, QString channelIdBase)
     {
         ServerInfo server_info;
-        server_info.version = "1.2.2";
+        server_info.version = version;
         server_info.user_name = username;
         server_info.server = server;
-        server_info.password = "";
+        server_info.password = password;
         server_info.channel_name = name;
-        server_info.channel_id = "Root";
+        server_info.channel_id = channelIdBase + name;
         AddChannel(name, server_info);
     }
 

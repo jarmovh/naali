@@ -5,7 +5,7 @@
  *  @brief  Window with tree view of contents of scene.
  *
  *          This class will only handle adding and removing of entities and components and updating
- *          their names. The SceneTreeWidget implements most of the functionlity.
+ *          their names. The SceneTreeWidget implements most of the functionality.
  */
 
 #include "StableHeaders.h"
@@ -25,6 +25,8 @@
 #include "EC_DynamicComponent.h"
 //#endif
 
+#include <QTreeWidgetItemIterator>
+
 #include "LoggingFunctions.h"
 
 DEFINE_POCO_LOGGING_FUNCTIONS("SceneStructureWindow")
@@ -37,53 +39,62 @@ SceneStructureWindow::SceneStructureWindow(Foundation::Framework *fw, QWidget *p
     QWidget(parent),
     framework(fw),
     showComponents(true),
-    showAssets(true)
+    showAssets(true),
+    treeWidget(0),
+    expandAndCollapseButton(0),
+    searchField(0)
 {
+    // Init main widget
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(5, 5, 5, 5);
     setLayout(layout);
     setWindowTitle(tr("Scene Structure"));
     resize(300, 400);
 
-    QCheckBox *compCheckBox = new QCheckBox(tr("Show components"), this);
-    compCheckBox->setChecked(showComponents);
-    QCheckBox *assetCheckBox = new QCheckBox(tr("Show asset references"), this);
-    assetCheckBox->setChecked(showAssets);
+    // Create child widgets
+    treeWidget = new SceneTreeWidget(fw, this);
+    expandAndCollapseButton = new QPushButton(tr("Expand All"), this);
 
-    QHBoxLayout *hlayout= new QHBoxLayout;
-    QLabel *searchLabel = new QLabel(tr("Search filter: "), this);
-    QLineEdit *searchField = new QLineEdit(this);
-    QPushButton *expandAndCollapseButton = new QPushButton(tr("Expand/collapse all"), this);
-    QSpacerItem *spacer = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Fixed);
+    searchField = new QLineEdit(this);
+    searchField->setText(tr("Search..."));
+    searchField->setStyleSheet("color:grey;");
+    searchField->installEventFilter(this);
 
-    hlayout->addWidget(searchLabel);
-    hlayout->addWidget(searchField);
-    hlayout->addSpacerItem(spacer);
-    hlayout->addWidget(expandAndCollapseButton);
-
-    QHBoxLayout *hlayout2 = new QHBoxLayout;
-    QSpacerItem *spacer2 = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Fixed);
-    QLabel *sortLabel = new QLabel(tr("Sort by:"));
+    QLabel *sortLabel = new QLabel(tr("Sort by"));
     QComboBox *sortComboBox = new QComboBox;
     sortComboBox->addItem(tr("ID"));
     sortComboBox->addItem(tr("Name"));
 
-    hlayout2->addSpacerItem(spacer2);
-    hlayout2->addWidget(sortLabel);
-    hlayout2->addWidget(sortComboBox);
-    treeWidget = new SceneTreeWidget(fw, this);
+    QCheckBox *compCheckBox = new QCheckBox(tr("Components"), this);
+    compCheckBox->setChecked(showComponents);
+    QCheckBox *assetCheckBox = new QCheckBox(tr("Asset References"), this);
+    assetCheckBox->setChecked(showAssets);
 
-    layout->addWidget(assetCheckBox);
-    layout->addWidget(compCheckBox);
-    layout->insertLayout(-1, hlayout);
-    layout->insertLayout(-1, hlayout2);
+    // Fill layouts
+    QHBoxLayout *layoutFilterAndSort = new QHBoxLayout();
+    layoutFilterAndSort->addWidget(searchField);
+    layoutFilterAndSort->addWidget(sortLabel);
+    layoutFilterAndSort->addWidget(sortComboBox);
+
+    QHBoxLayout *layoutSettingsVisibility = new QHBoxLayout;
+    layoutSettingsVisibility->addWidget(expandAndCollapseButton);
+    layoutSettingsVisibility->addWidget(new QLabel(tr("Show:")));
+    layoutSettingsVisibility->addWidget(compCheckBox);
+    layoutSettingsVisibility->addWidget(assetCheckBox);
+    layoutSettingsVisibility->addSpacerItem(new QSpacerItem(20, 1, QSizePolicy::Expanding, QSizePolicy::Fixed));
+
+    layout->addLayout(layoutFilterAndSort);
     layout->addWidget(treeWidget);
-
+    layout->addLayout(layoutSettingsVisibility);
+    
+    // Connect to widget signals
     connect(assetCheckBox, SIGNAL(toggled(bool)), SLOT(ShowAssetReferences(bool)));
     connect(compCheckBox, SIGNAL(toggled(bool)), SLOT(ShowComponents(bool)));
     connect(sortComboBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(Sort(const QString &)));
-    connect(searchField, SIGNAL(textChanged(const QString &)), SLOT(Search(const QString &)));
+    connect(searchField, SIGNAL(textEdited(const QString &)), SLOT(Search(const QString &)));
     connect(expandAndCollapseButton, SIGNAL(clicked()), SLOT(ExpandOrCollapseAll()));
+    connect(treeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)), SLOT(CheckTreeExpandStatus(QTreeWidgetItem*)));
+    connect(treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)), SLOT(CheckTreeExpandStatus(QTreeWidgetItem*)));
 }
 
 SceneStructureWindow::~SceneStructureWindow()
@@ -138,6 +149,11 @@ void SceneStructureWindow::ShowComponents(bool show)
     }
 
     treeWidget->setSortingEnabled(true);
+
+    if (!showAssets && !showComponents)
+        expandAndCollapseButton->setEnabled(false);
+    else
+        expandAndCollapseButton->setEnabled(true);
 }
 
 void SceneStructureWindow::ShowAssetReferences(bool show)
@@ -159,6 +175,11 @@ void SceneStructureWindow::ShowAssetReferences(bool show)
         CreateAssetReferences();
 
     treeWidget->setSortingEnabled(true);
+
+    if (!showAssets && !showComponents)
+        expandAndCollapseButton->setEnabled(false);
+    else
+        expandAndCollapseButton->setEnabled(true);
 }
 
 void SceneStructureWindow::changeEvent(QEvent* e)
@@ -230,7 +251,7 @@ void SceneStructureWindow::CreateAssetReferences()
         else
         {
             // Create asset ref items as children of entity items.
-            foreach(ComponentPtr comp, entity->GetComponentVector())
+            foreach(ComponentPtr comp, entity->Components())
                 foreach(IAttribute *attr, comp->GetAttributes())
                     if (attr->TypeName() == "assetreference" || attr->TypeName() == "assetreferencelist")
                         CreateAssetItem(eItem, attr);
@@ -267,7 +288,7 @@ void SceneStructureWindow::AddEntity(Scene::Entity* entity)
 
     treeWidget->addTopLevelItem(item);
 
-    foreach(ComponentPtr c, entity->GetComponentVector())
+    foreach(ComponentPtr c, entity->Components())
         AddComponent(entity, c.get());
 }
 
@@ -307,7 +328,7 @@ void SceneStructureWindow::AddComponent(Scene::Entity* entity, IComponent* comp)
                 eItem->SetText(entity);
                 DecorateEntityItem(entity, eItem);
 
-                connect(comp, SIGNAL(OnAttributeChanged(IAttribute *, AttributeChange::Type)),
+                connect(comp, SIGNAL(AttributeChanged(IAttribute *, AttributeChange::Type)),
                     SLOT(UpdateEntityName(IAttribute *)), Qt::UniqueConnection);
             }
 
@@ -317,7 +338,7 @@ void SceneStructureWindow::AddComponent(Scene::Entity* entity, IComponent* comp)
             {
                 connect(comp, SIGNAL(AttributeAdded(IAttribute *)), SLOT(AddAssetReference(IAttribute *)));
                 connect(comp, SIGNAL(AttributeAboutToBeRemoved(IAttribute *)), SLOT(RemoveAssetReference(IAttribute *)));
-                connect(comp, SIGNAL(OnAttributeChanged(IAttribute *, AttributeChange::Type)),
+                connect(comp, SIGNAL(AttributeChanged(IAttribute *, AttributeChange::Type)),
                     SLOT(UpdateAssetReference(IAttribute *)), Qt::UniqueConnection);
             }
 //#endif
@@ -662,6 +683,42 @@ void SceneStructureWindow::Sort(const QString &criteria)
         treeWidget->sortItems(1, order);
 }
 
+bool SceneStructureWindow::eventFilter(QObject *obj, QEvent *e)
+{
+    if (searchField && searchField == obj)
+    {
+        switch (e->type())
+        {
+            case QEvent::FocusIn:
+            {
+                QString currentText = searchField->text();
+                if (currentText == "Search...")
+                {
+                    searchField->setText("");
+                    searchField->setStyleSheet("color:black;");
+                }
+                else if (!currentText.isEmpty())
+                {
+                    // Calling selectAll() directly here won't do anything
+                    // as the ongoing QFocusEvent will overwrite what it does.
+                    QTimer::singleShot(1, searchField, SLOT(selectAll()));
+                }
+                break;
+            }
+            case QEvent::FocusOut:
+                if (searchField->text().simplified().isEmpty())
+                {
+                    searchField->setText(tr("Search..."));
+                    searchField->setStyleSheet("color:grey;");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    return QWidget::eventFilter(obj, e);
+}
+
 void SceneStructureWindow::Search(const QString &filter)
 {
     TreeWidgetSearch(treeWidget, 0, filter);
@@ -669,5 +726,32 @@ void SceneStructureWindow::Search(const QString &filter)
 
 void SceneStructureWindow::ExpandOrCollapseAll()
 {
-    TreeWidgetExpandOrCollapseAll(treeWidget);
+    bool treeExpanded = TreeWidgetExpandOrCollapseAll(treeWidget);
+    expandAndCollapseButton->setText(treeExpanded ? tr("Collapse All") : tr("Expand All"));
+}
+
+void SceneStructureWindow::CheckTreeExpandStatus(QTreeWidgetItem *item)
+{
+    bool anyExpanded = false;
+    QTreeWidgetItemIterator iter(treeWidget, QTreeWidgetItemIterator::HasChildren);
+    while (*iter) 
+    {
+        QTreeWidgetItem *iterItem = (*iter);
+        if (iterItem->isExpanded())
+        {
+            if (iterItem->parent() && !iterItem->parent()->isExpanded())
+                anyExpanded = false;
+            else
+            {
+                anyExpanded = true;
+                break;
+            }
+        }
+        ++iter;
+    }
+
+    if (anyExpanded)
+        expandAndCollapseButton->setText(tr("Collapse All"));
+    else
+        expandAndCollapseButton->setText(tr("Expand All"));
 }

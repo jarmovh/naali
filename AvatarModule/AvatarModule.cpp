@@ -10,8 +10,9 @@
 
 #include "EventManager.h"
 #include "NetworkEvents.h"
-#include "Input.h"
+#include "InputAPI.h"
 #include "SceneManager.h"
+#include "SceneAPI.h"
 #include "AssetAPI.h"
 #include "GenericAssetFactory.h"
 #include "AvatarDescAsset.h"
@@ -73,7 +74,7 @@ namespace Avatar
         SubscribeToEventCategories();
         scene_manager_->InitScene();
 
-        avatar_context_ = GetFramework()->GetInput()->RegisterInputContext("Avatar", 100);
+        avatar_context_ = GetFramework()->Input()->RegisterInputContext("Avatar", 100);
         if (avatar_context_)
         {
             connect(avatar_context_.get(), SIGNAL(KeyPressed(KeyEvent*)), SLOT(KeyPressed(KeyEvent*)));
@@ -104,7 +105,7 @@ namespace Avatar
 
     Scene::EntityPtr AvatarModule::GetAvatarEntity(entity_id_t entity_id)
     {
-        Scene::ScenePtr current_scene = GetFramework()->GetDefaultWorldScene();
+        Scene::ScenePtr current_scene = GetFramework()->Scene()->GetDefaultScene();
         if (!current_scene)
             return Scene::EntityPtr();
 

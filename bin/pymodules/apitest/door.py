@@ -38,7 +38,7 @@ class DoorHandler(circuits.BaseComponent):
         self.comp = comp
         circuits.BaseComponent.__init__(self)
 
-        comp.connect("OnAttributeChanged(IAttribute*, AttributeChange::Type)", self.onAttributeChanged)
+        comp.connect("AttributeChanged(IAttribute*, AttributeChange::Type)", self.onAttributeChanged)
         self.inworld_inited = False #a cheap hackish substitute for some initing system
         self.initgui()
 
@@ -64,7 +64,8 @@ class DoorHandler(circuits.BaseComponent):
         self.proxywidget.setWindowTitle(self.GUINAME)
         if not uism.AddWidgetToScene(self.proxywidget):
             print "Adding the ProxyWidget to the bar failed."
-        uism.AddWidgetToMenu(self.proxywidget, self.GUINAME, "Developer Tools")
+        # TODO: Due to core UI API refactor AddWidgetToMenu doesn't exist anymore.
+        #uism.AddWidgetToMenu(self.proxywidget, self.GUINAME, "Developer Tools")
 
     def onAttributeChanged(self, attr, chane):
         try:
@@ -116,7 +117,7 @@ class DoorHandler(circuits.BaseComponent):
             return None
     def set_opened(self, newval):
         self.comp.SetAttribute("opened", newval)
-        self.comp.OnChanged()
+        self.comp.ComponentChanged(0)
     opened = property(get_opened, set_opened)
 
     def get_locked(self):
@@ -126,7 +127,7 @@ class DoorHandler(circuits.BaseComponent):
             return None
     def set_locked(self, newval):
         self.comp.SetAttribute("locked", newval)
-        self.comp.OnChanged()
+        self.comp.ComponentChanged(0)
     locked = property(get_locked, set_locked)
 
     def open(self):
@@ -166,6 +167,6 @@ class DoorHandler(circuits.BaseComponent):
     def removegui(self, evid):
         self.proxywidget.hide()
         uism = naali.ui
-        uism.RemoveWidgetFromMenu(self.proxywidget)
+        # TODO: Due to core UI API refactor RemoveWidgetFromMenu doesn't exist anymore.
+        #uism.RemoveWidgetFromMenu(self.proxywidget)
         uism.RemoveWidgetFromScene(self.proxywidget)
-        

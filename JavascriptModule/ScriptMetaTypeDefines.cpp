@@ -10,6 +10,7 @@
 #include "MemoryLeakCheck.h"
 #include "ScriptMetaTypeDefines.h"
 
+#include "SceneAPI.h"
 #include "Entity.h"
 #include "IAssetTransfer.h"
 #include "IAssetUploadTransfer.h"
@@ -21,7 +22,7 @@
 #include "FrameAPI.h"
 #include "ConsoleAPI.h"
 #include "SceneManager.h"
-#include "Audio.h"
+#include "AudioAPI.h"
 #include "SoundChannel.h"
 #include "InputContext.h"
 #include "RenderServiceInterface.h"
@@ -30,6 +31,7 @@
 #include "NaaliGraphicsView.h"
 #include "EntityAction.h"
 #include "InputFwd.h"
+#include "ConfigAPI.h"
 #include "LoggingFunctions.h"
 
 #include <QUiLoader>
@@ -66,6 +68,7 @@ Q_DECLARE_METATYPE(NaaliGraphicsView*);
 Q_SCRIPT_DECLARE_QMETAOBJECT(UiProxyWidget, QWidget*)
 
 //! Naali Scene defines.
+Q_DECLARE_METATYPE(SceneAPI*);
 Q_DECLARE_METATYPE(Scene::SceneManager*);
 Q_DECLARE_METATYPE(Scene::Entity*);
 Q_DECLARE_METATYPE(EntityAction*);
@@ -85,6 +88,9 @@ Q_DECLARE_METATYPE(DebugAPI*);
 //! Naali Audio API object.
 Q_DECLARE_METATYPE(AudioAPI*);
 Q_DECLARE_METATYPE(SoundChannel*);
+
+//! Naali Config API object.
+Q_DECLARE_METATYPE(ConfigAPI*);
 
 //! Naali renderer defines
 Q_DECLARE_METATYPE(RaycastResult*);
@@ -193,6 +199,7 @@ void ExposeCoreApiMetaTypes(QScriptEngine *engine)
     qRegisterMetaType<GestureEvent::EventType>("GestureEvent::EventType");
 
     // Scene metatypes.
+    qScriptRegisterQObjectMetaType<SceneAPI*>(engine);
     qScriptRegisterQObjectMetaType<Scene::SceneManager*>(engine);
     qScriptRegisterQObjectMetaType<Scene::Entity*>(engine);
     qScriptRegisterQObjectMetaType<EntityAction*>(engine);
@@ -213,6 +220,9 @@ void ExposeCoreApiMetaTypes(QScriptEngine *engine)
     // Frame metatypes.
     qScriptRegisterQObjectMetaType<FrameAPI*>(engine);
     qScriptRegisterQObjectMetaType<DelayedSignal*>(engine);
+
+    // Config metatypes.
+    qScriptRegisterQObjectMetaType<ConfigAPI*>(engine);
 
     // Asset API
     qRegisterMetaType<AssetPtr>("AssetPtr");

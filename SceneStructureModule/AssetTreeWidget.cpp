@@ -13,10 +13,12 @@
 #include "SupportedFileTypes.h"
 #include "RequestNewAssetDialog.h"
 
+#include "SceneAPI.h"
 #include "AssetAPI.h"
 #include "IAsset.h"
 #include "AssetCache.h"
 #include "QtUtils.h"
+#include "UiAPI.h"
 
 #ifdef _WINDOWS
 #include <windows.h>
@@ -186,6 +188,12 @@ void AssetTreeWidget::AddAvailableActions(QMenu *menu)
     QAction *requestNewAssetAction = new QAction(tr("Request new asset..."), menu);
     connect(requestNewAssetAction, SIGNAL(triggered()), SLOT(RequestNewAsset()));
     menu->addAction(requestNewAssetAction);
+
+    // Let other instances add their possible functionality.
+    QList<QObject *> targets;
+    foreach(AssetItem *item, items)
+        targets.append(item->Asset().get());
+    framework->Ui()->EmitContextMenuAboutToOpen(menu, targets);
 }
 
 QList<AssetItem *> AssetTreeWidget::GetSelection() const
@@ -373,7 +381,7 @@ void AssetTreeWidget::SaveAssetDialogClosed(int result)
 
 void AssetTreeWidget::Upload(const QStringList &files)
 {
-    AddContentWindow *addContent = new AddContentWindow(framework, framework->GetDefaultWorldScene());
+    AddContentWindow *addContent = new AddContentWindow(framework, framework->Scene()->GetDefaultScene());
     addContent->AddFiles(files);
     addContent->show();
 }

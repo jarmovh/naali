@@ -11,8 +11,8 @@
 #include <QVariant>
 
 namespace Foundation { class Framework; }
-class IComponent;
-class IAttribute;
+
+class SceneAPI;
 
 class QDomDocument;
 
@@ -32,7 +32,7 @@ struct AttributeInterpolation
 
 namespace Scene
 {
-    //! Acts as a generic scenegraph for all entities in the world.
+    //! Acts as a generic scene graph for all entities in the world.
     /*! Contains all entities in the world.
         Acts as a factory for all entities.
 
@@ -47,7 +47,6 @@ namespace Scene
         Q_PROPERTY(bool viewenabled READ ViewEnabled)
 
     public:
-        //! destructor
         ~SceneManager();
 
         typedef std::map<entity_id_t, EntityPtr> EntityMap; //!< Typedef for an entity map.
@@ -99,23 +98,6 @@ namespace Scene
          */
         void ChangeEntityId(entity_id_t old_id, entity_id_t new_id);
 
-        //! This is an overloaded function.
-        /*! \param data Data buffer.
-            \param numBytes Data size.
-            \param replaceOnConflict In case of entity ID conflict, do we want to replace the existing entity or create a new one.
-            \param change Changetype that will be used, when removing the old scene, and deserializing the new
-            \return List of created entities.
-         */
-        QList<Entity *> CreateContentFromBinary(const char *data, int numBytes, bool replaceOnConflict, AttributeChange::Type change);
-
-        //! Creates scene content from scene description.
-        /*! \param desc Scene description.
-            \param replaceOnConflict In case of entity ID conflict, do we want to replace the existing entity or create a new one.
-            \param change Changetype that will be used, when removing the old scene, and deserializing the new
-            \return List of created entities.
-         */
-        QList<Entity *> CreateContentFromSceneDesc(const SceneDesc &desc, bool replaceOnConflict, AttributeChange::Type change);
-
         //! Starts an attribute interpolation
         /*! \param attr Attribute inside a static-structured component.
             \param endvalue Same kind of attribute holding the endpoint value. You must dynamically allocate this yourself, but SceneManager
@@ -153,7 +135,7 @@ namespace Scene
 
         /// Inspects xml data and returns a scene description structure from the contents of XML data.
         /** @param data Data to be processed.
-         *  @param sceneDesc Initialised SceneDesc with filename and enum type prepared.
+         *  @param sceneDesc Initialized SceneDesc with filename and enum type prepared.
          */
         SceneDesc GetSceneDescFromXml(QByteArray &data, SceneDesc &sceneDesc) const;
 
@@ -167,8 +149,17 @@ namespace Scene
         */
         SceneDesc GetSceneDescFromBinary(QByteArray &data, SceneDesc &sceneDesc) const;
 
-        /// \todo Clean these overload functions created for PythonQt and QtScript compability as much as possible.
+        /// Inspects .js file content for dependencies and adds them to sceneDesc.assets
+        /** @param filePath. Path to the file that is opened for inspection.
+            @param SceneDesc. Scene description struct ref, found asset dependencies will be added here.
+            @todo Make one implementation of this to a common place that EC_Script and SceneManager can use.
+            @note If the way we introduce js dependencies (!ref: and engine.IncludeFile()) changes, this function needs to change too.
+        */
+        void SearchScriptAssetDependencies(const QString &filePath, SceneDesc &sceneDesc) const;
+
+        /// \todo Clean these overload functions created for PythonQt and QtScript compatibility as much as possible.
         //  For documentation, see the plain C++ public methods above.
+
     public slots:
         bool HasEntityId(uint id) const { return HasEntity((entity_id_t)id); }
         uint NextFreeId() { return (uint)GetNextFreeId(); }
@@ -190,12 +181,13 @@ namespace Scene
         //! Return a scene document with just the desired entity
         QByteArray GetEntityXml(Scene::Entity *entity);
 
+        void LoadSceneXMLRaw(const QString &filename, bool clearScene, bool useEntityIDsFromFile, AttributeChange::Type change) { LoadSceneXML(filename.toStdString(), clearScene, useEntityIDsFromFile, change); }
         void EmitEntityCreated(Entity *entity, AttributeChange::Type change = AttributeChange::Default);
         void EmitEntityCreatedRaw(QObject *entity, AttributeChange::Type change = AttributeChange::Default);
 
         void RemoveEntityRaw(int entityid, AttributeChange::Type change = AttributeChange::Default) { RemoveEntity(entityid, change); }
 
-        //! Is scene view enabled (ie. rendering-related components actually create stuff)
+        //! Is scene view enabled (i.e. rendering-related components actually create stuff).
         bool ViewEnabled() const { return viewEnabled_; }
 
         //! Returns name of the scene.
@@ -246,7 +238,7 @@ namespace Scene
          */
         entity_id_t GetNextFreeIdLocal();
 
-        //! Return list of entities with a spesific component present.
+        //! Return list of entities with a specific component present.
         //! \param type_name Type name of the component
         EntityList GetEntitiesWithComponent(const QString &type_name) const;
 
@@ -309,14 +301,16 @@ namespace Scene
          */
         void EmitActionTriggered(Scene::Entity *entity, const QString &action, const QStringList &params, EntityAction::ExecutionType type);
 
-        //! Load the scene from XML
+        //! Loads the scene from XML.
         /*! \param filename File name
             \param clearScene Do we want to clear the existing scene.
-            \param replaceOnConflict In case of entity ID conflict, do we want to replace the existing entity or create a new one.
-            \param change Changetype that will be used, when removing the old scene, and deserializing the new
+            \param useEntityIDsFromFile If true, the created entities will use the Entity IDs from the original file. 
+                      If the scene contains any previous entities with conflicting IDs, those are removed. If false, the entity IDs from the files are ignored,
+                      and new IDs are generated for the created entities.
+            \param change Change type that will be used, when removing the old scene, and deserializing the new
             \return List of created entities.
          */
-        QList<Entity *> LoadSceneXML(const std::string& filename, bool clearScene, bool replaceOnConflict, AttributeChange::Type change);
+        QList<Scene::Entity *> LoadSceneXML(const std::string& filename, bool clearScene, bool useEntityIDsFromFile, AttributeChange::Type change);
 
         //! Returns scene content as an XML string.
         /*! \param getTemporary Are temporary entities wanted to be included.
@@ -325,21 +319,23 @@ namespace Scene
         */
         QByteArray GetSceneXML(bool getTemporary = false, bool getLocal = false) const;
 
-        //! Save the scene to XML
+        //! Saves the scene to XML.
         /*! \param filename File name
             \return true if successful
          */
         bool SaveSceneXML(const std::string& filename);
 
-        //! Load the scene from binary
+        //! Loads the scene from a binary file.
         /*! Note: will remove all existing entities
             \param filename File name
             \param clearScene Do we want to clear the existing scene.
-            \param replaceOnConflict In case of entity ID conflict, do we want to replace the existing entity or create a new one.
-            \param change Changetype that will be used, when removing the old scene, and deserializing the new
+            \param useEntityIDsFromFile If true, the created entities will use the Entity IDs from the original file. 
+                      If the scene contains any previous entities with conflicting IDs, those are removed. If false, the entity IDs from the files are ignored,
+                      and new IDs are generated for the created entities.
+            \param change Change type that will be used, when removing the old scene, and deserializing the new
             \return List of created entities.
          */
-        QList<Entity *> LoadSceneBinary(const std::string& filename, bool clearScene, bool replaceOnConflict, AttributeChange::Type change);
+        QList<Scene::Entity *> LoadSceneBinary(const std::string& filename, bool clearScene, bool useEntityIDsFromFile, AttributeChange::Type change);
 
         //! Save the scene to binary
         /*! \param filename File name
@@ -349,27 +345,55 @@ namespace Scene
 
         //! Creates scene content from XML.
         /*! \param xml XML document as string.
-            \param replaceOnConflict In case of entity ID conflict, do we want to replace the existing entity or create a new one.
-            \param change Changetype that will be used, when removing the old scene, and deserializing the new
+            \param useEntityIDsFromFile If true, the created entities will use the Entity IDs from the original file. 
+                      If the scene contains any previous entities with conflicting IDs, those are removed. If false, the entity IDs from the files are ignored,
+                      and new IDs are generated for the created entities.
+            \param change Change type that will be used, when removing the old scene, and deserializing the new
             \return List of created entities.
          */
-        QList<Entity *> CreateContentFromXml(const QString &xml, bool replaceOnConflict, AttributeChange::Type change);
+        QList<Scene::Entity *> CreateContentFromXml(const QString &xml, bool useEntityIDsFromFile, AttributeChange::Type change);
 
         //! This is an overloaded function.
         /*! \param xml XML document.
-            \param replaceOnConflict In case of entity ID conflict, do we want to replace the existing entity or create a new one.
-            \param change Changetype that will be used, when removing the old scene, and deserializing the new
+            \param useEntityIDsFromFile If true, the created entities will use the Entity IDs from the original file. 
+                      If the scene contains any previous entities with conflicting IDs, those are removed. If false, the entity IDs from the files are ignored,
+                      and new IDs are generated for the created entities.
+            \param change Change type that will be used, when removing the old scene, and deserializing the new
             \return List of created entities.
          */
-        QList<Entity *> CreateContentFromXml(const QDomDocument &xml, bool replaceOnConflict, AttributeChange::Type change);
+        QList<Scene::Entity *> CreateContentFromXml(const QDomDocument &xml, bool useEntityIDsFromFile, AttributeChange::Type change);
 
         //! Creates scene content from binary file.
         /*! \param filename File name.
-            \param replaceOnConflict In case of entity ID conflict, do we want to replace the existing entity or create a new one.
-            \param change Changetype that will be used, when removing the old scene, and deserializing the new
+            \param useEntityIDsFromFile If true, the created entities will use the Entity IDs from the original file. 
+                      If the scene contains any previous entities with conflicting IDs, those are removed. If false, the entity IDs from the files are ignored,
+                      and new IDs are generated for the created entities.
+            \param change Change type that will be used, when removing the old scene, and deserializing the new
             \return List of created entities.
          */
-        QList<Entity *> CreateContentFromBinary(const QString &filename, bool replaceOnConflict, AttributeChange::Type change);
+        QList<Scene::Entity *> CreateContentFromBinary(const QString &filename, bool useEntityIDsFromFile, AttributeChange::Type change);
+
+    public:
+        //! This is an overloaded function.
+        /*! \param data Data buffer.
+            \param numBytes Data size.
+            \param useEntityIDsFromFile If true, the created entities will use the Entity IDs from the original file. 
+                      If the scene contains any previous entities with conflicting IDs, those are removed. If false, the entity IDs from the files are ignored,
+                      and new IDs are generated for the created entities.
+            \param change Change type that will be used, when removing the old scene, and deserializing the new
+            \return List of created entities.
+         */
+        QList<Scene::Entity *> CreateContentFromBinary(const char *data, int numBytes, bool useEntityIDsFromFile, AttributeChange::Type change);
+
+        //! Creates scene content from scene description.
+        /*! \param desc Scene description.
+            \param useEntityIDsFromFile If true, the created entities will use the Entity IDs from the original file. 
+                      If the scene contains any previous entities with conflicting IDs, those are removed. If false, the entity IDs from the files are ignored,
+                      and new IDs are generated for the created entities.
+            \param change Change type that will be used, when removing the old scene, and deserializing the new
+            \return List of created entities.
+         */
+        QList<Scene::Entity *> CreateContentFromSceneDesc(const SceneDesc &desc, bool useEntityIDsFromFile, AttributeChange::Type change);
 
     signals:
         //! Signal when an attribute of a component has changed
@@ -430,7 +454,7 @@ namespace Scene
 
     private:
         Q_DISABLE_COPY(SceneManager);
-        friend class Foundation::Framework;
+        friend class ::SceneAPI;
 
         //! default constructor
         SceneManager();

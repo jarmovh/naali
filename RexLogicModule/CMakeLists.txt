@@ -10,7 +10,7 @@ file (GLOB XML_FILES *.xml)
 file (GLOB UI_FILES ui/*.ui)
 file (GLOB MOC_FILES RexLogicModule.h EventHandlers/LoginHandler.h RexMovementInput.h
     EventHandlers/MainPanelHandler.h EntityComponent/EC_*.h Environment/Primitive.h Communications/*.h
-    Communications/InWorldChat/*.h Camera/ObjectCameraController.h Camera/CameraControl.h SceneInteract.h NotificationWidget.h)
+    Communications/InWorldChat/*.h Camera/ObjectCameraController.h Camera/CameraControl.h NotificationWidget.h)
 
 # SubFolders to project with filtering
 AddSourceFolder (Avatar)
@@ -34,8 +34,8 @@ set (FILES_TO_TRANSLATE ${FILES_TO_TRANSLATE} ${H_FILES} ${CPP_FILES} PARENT_SCO
 
 add_definitions (-DREXLOGIC_MODULE_EXPORTS)
 
-if (UISERVICE_TEST)
-    add_definitions (-DUISERVICE_TEST)
+if (USE_UIMODULE)
+    add_definitions (-DUSE_UIMODULE)
 endif ()
 
 use_package (OPENJPEG)
@@ -43,7 +43,7 @@ use_package (OPENJPEG)
 use_modules (RexLogicModule Core Foundation Interfaces Scene OgreRenderingModule AssetModule AvatarModule RexCommon
     HttpUtilities RpcUtilities ProtocolUtilities ProtocolModuleOpenSim ProtocolModuleTaiga EnvironmentModule Input Asset Audio)
 
-if (NOT UISERVICE_TEST)
+if (USE_UIMODULE)
     use_modules (UiModule)
 endif ()
 
@@ -73,11 +73,13 @@ LinkEntityComponent(EntityComponents/EC_Touchable EC_Touchable)
 LinkEntityComponent(EntityComponents/EC_Light EC_Light)
 LinkEntityComponent(EntityComponents/EC_VideoSource EC_VideoSource)
 LinkEntityComponent(EntityComponents/EC_PlanarMirror EC_PlanarMirror)
+LinkEntityComponent(EntityComponents/EC_ProximityTrigger EC_ProximityTrigger)
+LinkEntityComponent(EntityComponents/EC_WebView EC_WebView)
 
 link_modules (Core Foundation Interfaces Scene OgreRenderingModule AssetModule AvatarModule RexCommon
     HttpUtilities RpcUtilities ProtocolUtilities ProtocolModuleOpenSim ProtocolModuleTaiga EnvironmentModule Asset Audio)
 
-if (NOT UISERVICE_TEST)
+if (USE_UIMODULE)
     link_modules (UiModule)
 endif ()
 

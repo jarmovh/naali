@@ -22,6 +22,13 @@ if (!framework.IsHeadless())
     fileMenu.addAction(new QIcon("./data/ui/images/icon/system-shutdown.ico"), "Quit").triggered.connect(Quit);
 
     var viewMenu = menu.addMenu("&View");
+    if (framework.GetModuleQObj("CAVEStereo"))
+    {
+        var caveMenu = viewMenu.addMenu("&CAVE and Stereo");
+        caveMenu.addAction("CAVE").triggered.connect(OpenCaveWindow);
+        caveMenu.addAction("Stereoscopy").triggered.connect(OpenStereoscopyWindow);
+    }
+
     if (framework.GetModuleQObj("SceneStructure"))
     {
         viewMenu.addAction("Assets").triggered.connect(OpenAssetsWindow);
@@ -30,7 +37,7 @@ if (!framework.IsHeadless())
 
     if (framework.GetModuleQObj("Console"))
     {
-        viewMenu.addAction("Console").triggered.connect(OpenConsoleWindow);  
+        viewMenu.addAction("Console").triggered.connect(OpenConsoleWindow);
     }
 
     //var eceditorAction = viewMenu.addAction("EC Editor");
@@ -39,7 +46,10 @@ if (!framework.IsHeadless())
         viewMenu.addAction("Profiler").triggered.connect(OpenProfilerWindow);
 
     if (framework.GetModuleQObj("Environment"))
+    {
         viewMenu.addAction("Terrain Editor").triggered.connect(OpenTerrainEditor);
+        viewMenu.addAction("Post-processing").triggered.connect(OpenPostProcessWindow);
+    }
 
     if (framework.GetModuleQObj("PythonScript"))
         viewMenu.addAction("Python Console").triggered.connect(OpenPythonConsole);
@@ -49,84 +59,80 @@ if (!framework.IsHeadless())
     helpMenu.addAction(new QIcon("./data/ui/images/icon/browser.ico"), "Doxygen").triggered.connect(OpenDoxygenUrl);
     helpMenu.addAction(new QIcon("./data/ui/images/icon/browser.ico"), "Mailing list").triggered.connect(OpenMailingListUrl);
 
-    function NewScene()
-    {
+    function NewScene() {
         scene.RemoveAllEntities();
     }
 
-    function Reconnect()
-    {
+    function Reconnect() {
         client.Reconnect();
     }
 
-    function Disconnect()
-    {
+    function Disconnect() {
         client.Logout();
     }
 
-    function Connected()
-    {
+    function Connected() {
         disconnectAction.setEnabled(true);
     }
 
-    function Disconnected()
-    {
+    function Disconnected() {
         disconnectAction.setEnabled(false);
     }
 
-    function Quit()
-    {
+    function Quit() {
         framework.Exit();
     }
 
-    function CheckForUpdates()
-    {
+    function CheckForUpdates() {
         if (framework.GetModuleQObj("UpdateModule"))
             framework.GetModuleQObj("UpdateModule").RunUpdater("/checknow");
     }
-       
-    function OpenMailingListUrl()
-    {
+
+    function OpenMailingListUrl() {
         QDesktopServices.openUrl(new QUrl("http://groups.google.com/group/realxtend/"));
     }
     
-    function OpenWikiUrl()
-    {
+    function OpenWikiUrl() {
         QDesktopServices.openUrl(new QUrl("http://wiki.realxtend.org/"));
     }
-    
-    function OpenDoxygenUrl()
-    {
+
+    function OpenDoxygenUrl() {
         QDesktopServices.openUrl(new QUrl("http://www.realxtend.org/doxygen/"));
     }
-    
-    function OpenSceneWindow()
-    {
-        framework.GetModuleQObj("SceneStructure").ShowSceneStructureWindow();
+
+    function OpenSceneWindow() {
+        framework.GetModuleQObj("SceneStructure").ToggleSceneStructureWindow();
     }
 
-    function OpenAssetsWindow()
-    {
-        framework.GetModuleQObj("SceneStructure").ShowAssetsWindow();
+    function OpenAssetsWindow() {
+        framework.GetModuleQObj("SceneStructure").ToggleAssetsWindow();
     }
 
-    function OpenProfilerWindow()
-    {
+    function OpenProfilerWindow() {
         console.ExecuteCommand("prof");
     }
 
-    function OpenTerrainEditor()
-    {
-        console.ExecuteCommand("TerrainTextureEditor");
+    function OpenTerrainEditor() {
+        framework.GetModuleQObj("Environment").ShowTerrainWeightEditor();
     }
 
-    function OpenPythonConsole()
-    {
+    function OpenPostProcessWindow() {
+        framework.GetModuleQObj("Environment").ShowPostProcessWindow();
+    }
+
+    function OpenPythonConsole() {
         console.ExecuteCommand("pythonconsole");
     }
 
-    function OpenConsoleWindow()
-    {
+    function OpenConsoleWindow() {
         framework.GetModuleQObj("Console").ToggleConsole();
+    }
+
+    function OpenStereoscopyWindow() {
+        framework.GetModuleQObj("CAVEStereo").ShowStereoscopyWindow();
+    }
+
+    function OpenCaveWindow() {
+        framework.GetModuleQObj("CAVEStereo").ShowCaveWindow();
     }
 }
