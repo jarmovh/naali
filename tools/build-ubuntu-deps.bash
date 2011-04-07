@@ -40,7 +40,7 @@ export CXX="ccache g++"
 export CCACHE_DIR=$deps/ccache
 
 if lsb_release -c | grep -q natty; then
-	sudo apt-get install aptitude
+	sudo apt-get -f install aptitude
 	sudo aptitude -y install scons python-dev libogg-dev libvorbis-dev \
 	 libopenjpeg-dev libcurl4-gnutls-dev libexpat1-dev libphonon-dev \
 	 build-essential g++ libogre-dev libboost-all-dev libpoco-dev \
@@ -48,7 +48,7 @@ if lsb_release -c | grep -q natty; then
          libtelepathy-farsight-dev libnice-dev libgstfarsight0.10-dev \
          libtelepathy-qt4-dev python-gst0.10-dev \
 	 libxmlrpc-epi-dev bison flex libxml2-dev libois-dev cmake libalut-dev \
-	 libept0 libparse-debianchangelog-perl
+	 
 
 	
 fi
