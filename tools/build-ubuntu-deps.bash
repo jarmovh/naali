@@ -40,6 +40,7 @@ export CXX="ccache g++"
 export CCACHE_DIR=$deps/ccache
 
 if lsb_release -c | grep -q natty; then
+	sudo apt-get install aptitude
 	sudo aptitude -y install scons python-dev libogg-dev libvorbis-dev \
 	 libopenjpeg-dev libcurl4-gnutls-dev libexpat1-dev libphonon-dev \
 	 build-essential g++ libogre-dev libboost-all-dev libpoco-dev \
