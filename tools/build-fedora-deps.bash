@@ -32,6 +32,18 @@ export CC="ccache gcc"
 export CXX="ccache g++"
 export CCACHE_DIR=$deps/ccache
 
+yum install scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
+libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
+pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
+bison flex libxml2-devel ois-devel cmake freealut-devel
+
+libphonon-dev \
+	 build-essential g++ libogre-dev libboost-all-dev libpoco-dev \
+	 python-gtk2-dev libdbus-glib-1-dev ccache libqt4-dev python-dev \
+         libtelepathy-farsight-dev libnice-dev libgstfarsight0.10-dev \
+         libtelepathy-qt4-dev python-gst0.10-dev \
+	 libxmlrpc-epi-dev bison flex libxml2-dev libois-dev cmake libalut-dev \
+
 function build-regular {
     urlbase=$1
     shift
@@ -78,17 +90,17 @@ fi
 
 cd $build
 what=PythonQt
+ver=2.0.1
 if test -f $tags/$what-done; then
     echo $what is done
 else
-    if test -d $what; then
-        svn update $what
-    else
-        svn co $viewerdeps_svn/trunk/$what $what
-    fi
-    cd $what
-    /usr/lib/qt4/bin/qmake
-    make
+    rm -rf $what$ver
+    zip=../tarballs/$what$ver.zip
+    test -f $zip || wget -O $zip http://downloads.sourceforge.net/project/pythonqt/pythonqt/$what-$ver/$what$ver.zip
+    unzip $zip
+    cd $what$ver
+    qmake
+    make -j2
     rm -f $prefix/lib/lib$what*
     cp -a lib/lib$what* $prefix/lib/
     cp src/PythonQt*.h $prefix/include/
