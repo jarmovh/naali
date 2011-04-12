@@ -32,10 +32,12 @@ export CC="ccache gcc"
 export CXX="ccache g++"
 export CCACHE_DIR=$deps/ccache
 
-yum install scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
+sudo yum install scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
 libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
-bison flex libxml2-devel ois-devel cmake freealut-devel
+bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
+xmlrpc
+
 
 function build-regular {
     urlbase=$1
@@ -87,12 +89,12 @@ ver=2.0.1
 if test -f $tags/$what-done; then
     echo $what is done
 else
-    rm -rf $what$ver
+    #rm -rf $what$ver
     zip=../tarballs/$what$ver.zip
     test -f $zip || wget -O $zip http://downloads.sourceforge.net/project/pythonqt/pythonqt/$what-$ver/$what$ver.zip
-    unzip $zip
+    #unzip $zip
     cd $what$ver
-    qmake
+    #qmake
     make -j2
     rm -f $prefix/lib/lib$what*
     cp -a lib/lib$what* $prefix/lib/
@@ -103,16 +105,16 @@ fi
 
 ln -fvs /usr/include/xmlrpc-epi/*.h $prefix/include/
 
-build-regular http://nice.freedesktop.org/releases/ libnice 0.0.10
-build-regular http://gstreamer.freedesktop.org/src/gstreamer/ gstreamer 0.10.25
-build-regular http://gstreamer.freedesktop.org/src/gst-plugins-base/ gst-plugins-base 0.10.25
-build-regular http://gstreamer.freedesktop.org/src/gst-python/ gst-python 0.10.17
-build-regular http://farsight.freedesktop.org/releases/farsight2/ farsight2 0.0.17
-build-regular http://farsight.freedesktop.org/releases/gst-plugins-farsight/ gst-plugins-farsight 0.12.11
-build-regular http://telepathy.freedesktop.org/releases/telepathy-glib/ telepathy-glib 0.9.1
-build-regular http://telepathy.freedesktop.org/releases/telepathy-farsight/ telepathy-farsight 0.0.13
-build-regular http://telepathy.freedesktop.org/releases/telepathy-qt4/ telepathy-qt4 0.2.1
-build-regular http://downloads.sourceforge.net/project/poco/sources/poco-1.3.6/ poco 1.3.6p1
+    build-regular http://nice.freedesktop.org/releases/ libnice 0.0.10
+    build-regular http://gstreamer.freedesktop.org/src/gstreamer/ gstreamer 0.10.25
+    build-regular http://gstreamer.freedesktop.org/src/gst-plugins-base/ gst-plugins-base 0.10.25
+    build-regular http://gstreamer.freedesktop.org/src/gst-python/ gst-python 0.10.17
+    build-regular http://farsight.freedesktop.org/releases/farsight2/ farsight2 0.0.17
+    build-regular http://farsight.freedesktop.org/releases/obsolete/gst-plugins-farsight/ gst-plugins-farsight 0.12.11
+    build-regular http://telepathy.freedesktop.org/releases/telepathy-glib/ telepathy-glib 0.13.0
+    build-regular http://telepathy.freedesktop.org/releases/telepathy-farsight/ telepathy-farsight 0.0.13
+    build-regular http://telepathy.freedesktop.org/releases/telepathy-qt4/ telepathy-qt4 0.2.1
+    build-regular http://downloads.sourceforge.net/project/poco/sources/poco-1.3.6/ poco 1.3.6p1
 
 if test "$1" = "--depsonly"; then
     exit 0
