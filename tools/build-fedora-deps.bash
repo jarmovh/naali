@@ -37,13 +37,6 @@ libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel
 
-libphonon-dev \
-	 build-essential g++ libogre-dev libboost-all-dev libpoco-dev \
-	 python-gtk2-dev libdbus-glib-1-dev ccache libqt4-dev python-dev \
-         libtelepathy-farsight-dev libnice-dev libgstfarsight0.10-dev \
-         libtelepathy-qt4-dev python-gst0.10-dev \
-	 libxmlrpc-epi-dev bison flex libxml2-dev libois-dev cmake libalut-dev \
-
 function build-regular {
     urlbase=$1
     shift
