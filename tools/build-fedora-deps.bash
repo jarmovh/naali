@@ -39,7 +39,11 @@ pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
 wget qt qt4\
 
-sudo ln -s /usr/bin/qmake-qt4 /usr/bin/qmake
+if test -f /usr/bin/qmake; then
+	echo qmake exists
+else
+	sudo ln -s /usr/bin/qmake-qt4 /usr/bin/qmake
+fi
 
 function build-regular {
     urlbase=$1
