@@ -37,7 +37,7 @@ sudo yum install scons libogg-devel python-devel libvorbis-devel openjpeg-devel 
 libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
-xmlrpc wget \
+xmlrpc wget qt qt4\
 
 
 function build-regular {
@@ -101,6 +101,26 @@ else
     cp -a lib/lib$what* $prefix/lib/
     cp src/PythonQt*.h $prefix/include/
     cp extensions/PythonQt_QtAll/PythonQt*.h $prefix/include/
+    touch $tags/$what-done
+fi
+
+cd $build
+what=qtpropertybrowser
+if test -f $tags/$what-done; then
+    echo $what is done
+else
+    pkgbase=${what}-2.5_1-opensource
+    rm -rf $pkgbase
+    zip=../tarballs/$pkgbase.tar.gz
+    test -f $zip || wget -O $zip http://get.qt.nokia.com/qt/solutions/lgpl/$pkgbase.tar.gz
+    tar zxf $zip
+    cd $pkgbase
+    echo yes | ./configure -library
+    qmake
+    make
+    cp lib/lib* $prefix/lib/
+    # luckily only extensionless headers under src match Qt*:
+    cp src/qt*.h src/Qt* $prefix/include/
     touch $tags/$what-done
 fi
 
