@@ -37,8 +37,9 @@ sudo yum install scons libogg-devel python-devel libvorbis-devel openjpeg-devel 
 libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
-xmlrpc wget qt qt4\
+wget qt qt4\
 
+sudo ln -s /usr/bin/qmake-qt4 /usr/bin/qmake
 
 function build-regular {
     urlbase=$1
@@ -123,6 +124,25 @@ else
     cp src/qt*.h src/Qt* $prefix/include/
     touch $tags/$what-done
 fi
+
+cd $build
+what=xmlrpc-epi
+if test -f $tags/$what-done; then
+    echo $what is done
+else
+    pkgbase=${what}-0.54.2
+    rm -rf $pkgbase
+    zip=../tarballs/$pkgbase.tar.bz2
+    test -f $zip || wget -O $zip http://sourceforge.net/projects/xmlrpc-epi/files/xmlrpc-epi-base/0.54.2/$pkgbase.tar.bz2
+    tar -xjf $zip
+    cd $pkgbase
+    echo yes | ./configure --disable-debug --disable-static
+    make -j $nprocs
+    make install
+    touch $tags/$what-done
+fi
+
+
 
 ln -fvs /usr/include/xmlrpc-epi/*.h $prefix/include/
 
