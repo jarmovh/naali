@@ -32,12 +32,18 @@ export CC="ccache gcc"
 export CXX="ccache g++"
 export CCACHE_DIR=$deps/ccache
 
+sudo yum groupinstall "Development Tools"
 sudo yum install scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
 libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
-xmlrpc
+wget qt qt4\
 
+if test -f /usr/bin/qmake; then
+	echo qmake exists
+else
+	sudo ln -s /usr/bin/qmake-qt4 /usr/bin/qmake
+fi
 
 function build-regular {
     urlbase=$1
@@ -89,12 +95,12 @@ ver=2.0.1
 if test -f $tags/$what-done; then
     echo $what is done
 else
-    #rm -rf $what$ver
+    rm -rf $what$ver
     zip=../tarballs/$what$ver.zip
     test -f $zip || wget -O $zip http://downloads.sourceforge.net/project/pythonqt/pythonqt/$what-$ver/$what$ver.zip
-    #unzip $zip
+    unzip $zip
     cd $what$ver
-    #qmake
+    qmake
     make -j2
     rm -f $prefix/lib/lib$what*
     cp -a lib/lib$what* $prefix/lib/
@@ -102,6 +108,45 @@ else
     cp extensions/PythonQt_QtAll/PythonQt*.h $prefix/include/
     touch $tags/$what-done
 fi
+
+cd $build
+what=qtpropertybrowser
+if test -f $tags/$what-done; then
+    echo $what is done
+else
+    pkgbase=${what}-2.5_1-opensource
+    rm -rf $pkgbase
+    zip=../tarballs/$pkgbase.tar.gz
+    test -f $zip || wget -O $zip http://get.qt.nokia.com/qt/solutions/lgpl/$pkgbase.tar.gz
+    tar zxf $zip
+    cd $pkgbase
+    echo yes | ./configure -library
+    qmake
+    make
+    cp lib/lib* $prefix/lib/
+    # luckily only extensionless headers under src match Qt*:
+    cp src/qt*.h src/Qt* $prefix/include/
+    touch $tags/$what-done
+fi
+
+cd $build
+what=xmlrpc-epi
+if test -f $tags/$what-done; then
+    echo $what is done
+else
+    pkgbase=${what}-0.54.2
+    rm -rf $pkgbase
+    zip=../tarballs/$pkgbase.tar.bz2
+    test -f $zip || wget -O $zip http://sourceforge.net/projects/xmlrpc-epi/files/xmlrpc-epi-base/0.54.2/$pkgbase.tar.bz2
+    tar -xjf $zip
+    cd $pkgbase
+    echo yes | ./configure --disable-debug --disable-static
+    make -j $nprocs
+    make install
+    touch $tags/$what-done
+fi
+
+
 
 ln -fvs /usr/include/xmlrpc-epi/*.h $prefix/include/
 
