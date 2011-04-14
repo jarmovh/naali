@@ -70,6 +70,38 @@ function build-regular {
     fi
 }
 
+what=bullet-2.77
+if test -f $tags/$what-done; then
+    echo $what is done
+else
+    cd $build
+    rm -rf $what
+    test -f $tarballs/$what.tgz || wget -P $tarballs http://bullet.googlecode.com/files/$what.tgz
+    tar zxf $tarballs/$what.tgz
+    cd $what
+    cmake -DCMAKE_INSTALL_PREFIX=$prefix -DBUILD_DEMOS=OFF -DINSTALL_EXTRA_LIBS=ON -DCMAKE_CXX_FLAGS_RELEASE="-O2 -fPIC -DNDEBUG -DBT_NO_PROFILE" .
+    make -j $nprocs
+    make install
+    touch $tags/$what-done
+fi
+
+what=knet
+if false && test -f $tags/$what-done; then 
+   echo $what is done
+else
+    cd $build
+    rm -rf knet
+    hg clone -r stable http://bitbucket.org/clb/knet
+    cd knet
+    sed -e "s/USE_TINYXML TRUE/USE_TINYXML FALSE/" -e "s/kNet STATIC/kNet SHARED/" -e "s/#set(USE_QT/set(USE_QT/" < CMakeLists.txt > x
+    mv x CMakeLists.txt
+    cmake . -DCMAKE_BUILD_TYPE=Debug
+    make -j $nprocs
+    cp lib/libkNet.so $prefix/lib/
+    rsync -r include/* $prefix/include/
+    touch $tags/$what-done
+fi
+
 what=Caelum
 if test -f $tags/$what-done; then
     echo $what is done
