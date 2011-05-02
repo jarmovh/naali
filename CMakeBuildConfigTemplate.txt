@@ -42,9 +42,8 @@ if (MSVC)
 endif()
 
 # The UI functionality can be accessed through the UI core API object.
-# UiModule contains the original Ether login screen and UI functionality.
+# UiModule contains the original Naali Ether login screen and UI functionality.
 # Some legacy/reX features are disabled if UiModule is not used.
-# If UiModule is used, LoginScreenModule is not included to the build.
 SET(USE_UIMODULE 0)
 
 # Enables Open Asset Import Library, which can be used to import various
@@ -107,6 +106,7 @@ AddEntityComponent(EntityComponents/EC_Gizmo EC_Gizmo)
 AddEntityComponent(EntityComponents/EC_VideoSource EC_VideoSource)
 AddEntityComponent(EntityComponents/EC_Selected EC_Selected)
 AddEntityComponent(EntityComponents/EC_WebView EC_WebView)
+AddEntityComponent(EntityComponents/EC_LaserPointer EC_LaserPointer)
 
 # The following EC's are declared by AvatarModule. Optional.
 AddEntityComponent(EntityComponents/EC_HoveringWidget EC_HoveringWidget)
@@ -132,8 +132,6 @@ add_subdirectory(ProtocolModuleTaiga)   # Required with OpenSim.
 
 if (USE_UIMODULE)
     add_subdirectory(UiModule)          # Depends on OgreRenderingModule.
-else()
-#    add_subdirectory(LoginScreenModule)
 endif()
 
 # The following are optional.
@@ -160,6 +158,9 @@ AddEntityComponent(EntityComponents/EC_Billboard EC_Billboard)     # declared by
 
 if (MSVC)
     add_subdirectory(MumbleVoipModule)   # VOIP communication using the Mumble library. Depends on OgreRenderingModule.
+    add_subdirectory(CameraInputModule)  # Camera input module depends on opencv library.
+else()
+    # \todo Include MumbleVoip and CameraInputModule on linux. For CameraInputModule ConfigurePackages.cmake you can find todo comments in the opencv related macros.
 endif()
 
 #add_subdirectory(PhononPlayerModule)    # Implements Qt Phonon -based video playback capabilities.
@@ -171,3 +172,6 @@ endif()
 
 # Only useful for msi installer builds
 #add_subdirectory(UpdateModule)
+
+
+

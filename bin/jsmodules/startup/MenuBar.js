@@ -3,13 +3,24 @@ if (!framework.IsHeadless())
     engine.ImportExtension("qt.core");
     engine.ImportExtension("qt.gui");
 
-    var menu = ui.MainWindow().menuBar();
-    menu.clear();
+    var sceneAction = null;
+    var assetAction = null;
+    
+    var mainwin = ui.MainWindow();
 
-    var fileMenu = menu.addMenu("&File");
+    // File
+    var fileMenu = mainwin.AddMenu("&File");
+    
+    // Load and save scene
+    var importWebAction = fileMenu.addAction(new QIcon("./data/ui/images/folder_closed.png"), "Import Web Scene");
+    importWebAction.triggered.connect(OpenWebScene);
+    var exportAction = fileMenu.addAction(new QIcon("./data/ui/images/resource.png"), "Save as...");
+    exportAction.triggered.connect(SaveScene);
+    fileMenu.addSeparator();
+    
     if (framework.GetModuleQObj("UpdateModule"))
         fileMenu.addAction(new QIcon("./data/ui/images/icon/update.ico"), "Check Updates").triggered.connect(CheckForUpdates);
-    //fileMenu.addAction("New scene").triggered.connect(NewScene);
+       
     // Reconnect menu items for client only
     if (!server.IsAboutToStart())
     {
@@ -21,26 +32,18 @@ if (!framework.IsHeadless())
     }
     fileMenu.addAction(new QIcon("./data/ui/images/icon/system-shutdown.ico"), "Quit").triggered.connect(Quit);
 
-    var viewMenu = menu.addMenu("&View");
-    if (framework.GetModuleQObj("CAVEStereo"))
-    {
-        var caveMenu = viewMenu.addMenu("&CAVE and Stereo");
-        caveMenu.addAction("CAVE").triggered.connect(OpenCaveWindow);
-        caveMenu.addAction("Stereoscopy").triggered.connect(OpenStereoscopyWindow);
-    }
-
+    // View
+    var viewMenu = mainwin.AddMenu("&View");
     if (framework.GetModuleQObj("SceneStructure"))
     {
-        viewMenu.addAction("Assets").triggered.connect(OpenAssetsWindow);
-        viewMenu.addAction("Scene").triggered.connect(OpenSceneWindow);
+        assetAction = viewMenu.addAction(new QIcon("./data/ui/images/fileIcons.png"), "Assets");
+        assetAction.triggered.connect(OpenAssetsWindow);
+        sceneAction = viewMenu.addAction(new QIcon("./data/ui/images/fileList.png"), "Scene");
+        sceneAction.triggered.connect(OpenSceneWindow);
     }
 
     if (framework.GetModuleQObj("Console"))
-    {
         viewMenu.addAction("Console").triggered.connect(OpenConsoleWindow);
-    }
-
-    //var eceditorAction = viewMenu.addAction("EC Editor");
 
     if (framework.GetModuleQObj("DebugStats"))
         viewMenu.addAction("Profiler").triggered.connect(OpenProfilerWindow);
@@ -54,11 +57,21 @@ if (!framework.IsHeadless())
     if (framework.GetModuleQObj("PythonScript"))
         viewMenu.addAction("Python Console").triggered.connect(OpenPythonConsole);
         
-    var helpMenu = menu.addMenu("&Help");
+    // Settings
+    if (framework.GetModuleQObj("CAVEStereo"))
+    {
+        var caveSettings = mainwin.AddMenuAction("&Settings", "Cave");
+        caveSettings.triggered.connect(OpenCaveWindow);
+        var stereoSettings = mainwin.AddMenuAction("&Settings", "Stereoscopy");
+        stereoSettings.triggered.connect(OpenStereoscopyWindow);
+    }
+    
+    // Help
+    var helpMenu = mainwin.AddMenu("&Help");
     helpMenu.addAction(new QIcon("./data/ui/images/icon/browser.ico"), "Wiki").triggered.connect(OpenWikiUrl);
     helpMenu.addAction(new QIcon("./data/ui/images/icon/browser.ico"), "Doxygen").triggered.connect(OpenDoxygenUrl);
     helpMenu.addAction(new QIcon("./data/ui/images/icon/browser.ico"), "Mailing list").triggered.connect(OpenMailingListUrl);
-
+    
     function NewScene() {
         scene.RemoveAllEntities();
     }
@@ -73,10 +86,16 @@ if (!framework.IsHeadless())
 
     function Connected() {
         disconnectAction.setEnabled(true);
+        importWebAction.setEnabled(true);
+        exportAction.setEnabled(true);
+        ui.EmitAddAction(sceneAction);
+        ui.EmitAddAction(assetAction);
     }
 
     function Disconnected() {
         disconnectAction.setEnabled(false);
+        importWebAction.setEnabled(false);
+        exportAction.setEnabled(false);
     }
 
     function Quit() {
@@ -89,15 +108,24 @@ if (!framework.IsHeadless())
     }
 
     function OpenMailingListUrl() {
-        QDesktopServices.openUrl(new QUrl("http://groups.google.com/group/realxtend/"));
+        if (server.IsRunning())
+            QDesktopServices.openUrl(new QUrl("http://groups.google.com/group/realxtend/"));
+        else
+            ui.EmitOpenUrl(new QUrl("http://groups.google.com/group/realxtend/"));
     }
     
     function OpenWikiUrl() {
-        QDesktopServices.openUrl(new QUrl("http://wiki.realxtend.org/"));
+        if (server.IsRunning())
+            QDesktopServices.openUrl(new QUrl("http://wiki.realxtend.org/"));
+        else
+            ui.EmitOpenUrl(new QUrl("http://wiki.realxtend.org/"));
     }
 
     function OpenDoxygenUrl() {
-        QDesktopServices.openUrl(new QUrl("http://www.realxtend.org/doxygen/"));
+        if (server.IsRunning())
+            QDesktopServices.openUrl(new QUrl("http://www.realxtend.org/doxygen/"));
+        else
+            ui.EmitOpenUrl(new QUrl("http://www.realxtend.org/doxygen/"));
     }
 
     function OpenSceneWindow() {
@@ -134,5 +162,73 @@ if (!framework.IsHeadless())
 
     function OpenCaveWindow() {
         framework.GetModuleQObj("CAVEStereo").ShowCaveWindow();
+    }
+    
+    function OpenLocalScene() {
+        var currentScene = framework.Scene().GetDefaultSceneRaw();
+        if (currentScene == null)
+            return;
+        
+        var filename = QFileDialog.getOpenFileName(ui.MainWindow(), "Import Scene", QDir.currentPath() + "/scenes", "Tundra Scene (*.txml *.tbin)");
+        if (filename == null || filename == "")
+            return;
+        if (!QFile.exists(filename))
+            return;
+            
+        var fileninfo = new QFileInfo(filename);
+        if (fileninfo.suffix() == "txml")
+            currentScene.LoadSceneXML(filename, false, false, 3);
+        else if (fileninfo.suffix() == "tbin")
+            currentScene.LoadSceneBinary(filename, false, false, 3);
+    }
+    
+    function OpenWebScene() {
+        var webRef = QInputDialog.getText(ui.MainWindow(), "Import Web Scene", "Insert a txml or tbin scene url", QLineEdit.Normal, "http://", Qt.Dialog);
+        if (webRef == null || webRef == "")
+            return;
+        var ext = webRef.substring(webRef.length-4);
+        var qUrl = QUrl.fromUserInput(webRef);
+        if (!qUrl.isValid())
+            return;
+        
+        if (ext != "txml" && ext != "tbin")
+            return;
+        var transfer = asset.RequestAsset(qUrl.toString()).get();
+        transfer.Loaded.connect(WebSceneLoaded);
+    }
+    
+    function WebSceneLoaded(assetptr) {
+        var currentScene = framework.Scene().GetDefaultSceneRaw();
+        if (currentScene == null)
+            return;
+                   
+        var asset = assetptr.get();
+        var diskSource = asset.DiskSource();
+        var fileninfo = new QFileInfo(diskSource);
+        if (fileninfo.suffix() == "txml")
+            currentScene.LoadSceneXML(diskSource, false, false, 3);
+        else if (fileninfo.suffix() == "tbin")
+            currentScene.LoadSceneBinary(diskSource, false, false, 3);
+    }
+    
+    function SaveScene() {
+        var currentScene = framework.Scene().GetDefaultSceneRaw();
+        if (currentScene == null)
+            return;
+            
+        var filename = QFileDialog.getSaveFileName(ui.MainWindow(), "Export Scene", QDir.currentPath() + "/scenes", "Tundra Scene (*.txml *.tbin)");
+        if (filename == null || filename == "")
+            return;
+        var ext = new QFileInfo(filename).suffix();
+        if (ext != "txml" && ext != "tbin")
+        {
+            QMessageBox.information(ui.MainWindow(), "Invalid extension", "Invalid Tundra scene file extension '" + ext + "'");
+            return;
+        }
+           
+        if (ext == "txml")
+            currentScene.SaveSceneXML(filename);
+        else if (ext == "tbin")
+            currentScene.SaveSceneBinary(filename);
     }
 }

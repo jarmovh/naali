@@ -20,6 +20,7 @@ DEFINE_POCO_LOGGING_FUNCTIONS("UiAPI")
 #include <QScrollBar>
 #include <QUiLoader>
 #include <QFile>
+#include <QAction>
 
 #include "MemoryLeakCheck.h"
 
@@ -319,6 +320,16 @@ QWidget *UiAPI::LoadFromFile(const QString &filePath, bool addToScene, QWidget *
 void UiAPI::EmitContextMenuAboutToOpen(QMenu *menu, QList<QObject *> targets)
 {
     emit ContextMenuAboutToOpen(menu,targets);
+}
+
+void UiAPI::EmitAddAction(QAction *action, const QString &group)
+{
+    emit AddAction(action, group);
+}
+
+void UiAPI::EmitOpenUrl(const QUrl &url)
+{
+    emit OpenUrl(url);
 }
 
 void UiAPI::ShowWidget(QWidget *widget) const

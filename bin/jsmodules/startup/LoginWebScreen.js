@@ -10,6 +10,7 @@ engine.IncludeFile("jsmodules/startup/LoginScreen.js");
 
 var iconRefresh = new QIcon("./data/ui/images/browser/refresh.png");
 var iconStop = new QIcon("./data/ui/images/browser/stop.png");
+var defaultIcon = new QIcon("./data/ui/images/browser/default-tool.png");
 
 // This magic number should do the trick of keeping the top part
 // of the UI same if you are in 3D tab or web tab. Hopefully the linux
@@ -40,6 +41,7 @@ var BrowserManager = Class.extend
         this.browserProxy = ui.AddWidgetToScene(this.browser, Qt.Widget);
         this.browserProxy.windowFlags = Qt.Widget;
         this.browserProxy.effect = 0;
+        this.browserProxy.z = 10000;
         
         this.tabs = findChild(this.browser, "tabs");
         this.tabs.clear();
@@ -59,7 +61,7 @@ var BrowserManager = Class.extend
         newTabButton.setFixedSize(16,16);
         newTabButton.setStyleSheet("background-image: url(./data/ui/images/browser/tab-new.png); border: 0px;");
         newTabButton.move(3,60); // Here be dragons
-
+        
         // Address and progress bar
         this.addressBar = new QComboBox();
         this.addressBar.setFixedHeight(23);
@@ -92,12 +94,19 @@ var BrowserManager = Class.extend
         this.actionHome.triggered.connect(this.onHome);
         this.actionHome.toolTip = "Go to home page " + this.settings.homepage;
         
-        // Toolbar for inworld widgets
-        // \todo change to QToolBar
-        this.toolBar = new QWidget();
+        // Toolbar for inworld actions
+        this.toolBarGroups = {};
+        this.toolBarContainers = {};
+        
+        this.toolBar = new QToolBar();
         this.toolBar.setFixedHeight(26);
-        this.toolBar.setLayout(new QHBoxLayout());
-        this.toolBar.layout().setContentsMargins(0,0,0,0);
+        this.toolBar.setStyleSheet("background-color: none; border: 0px;");
+        this.toolBar.toolButtonStyle = Qt.ToolButtonIconOnly;
+        this.toolBar.orientation = Qt.Horizontal;
+        this.toolBar.iconSize = new QSize(23,23);
+        this.toolBar.floatable = false;
+        this.toolBar.movable = false;
+        this.toolBar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed);
         
         // Toolbar for address bar and favorites
         this.favoritesToolBar = new QToolBar();
@@ -124,11 +133,13 @@ var BrowserManager = Class.extend
 
         // Splitter
         this.splitter = new QSplitter(Qt.Horizontal);
-        this.splitter.addWidget(this.addressAndFavoritesBar);
-        this.splitter.addWidget(this.toolBar);
         this.splitter.setFixedHeight(26);
         this.splitter.handleWidth = 12;
+        this.splitter.childrenCollapsible = true;
+        this.splitter.addWidget(this.addressAndFavoritesBar);
+        this.splitter.addWidget(this.toolBar);
         this.splitter.setStretchFactor(0, 2);
+        this.splitterStartState = this.splitter.saveState();
         
         // Combine ui
         controlLayout.addWidget(this.browserToolBar, 0, 0);
@@ -143,11 +154,24 @@ var BrowserManager = Class.extend
         
         client.Connected.connect(this.onConnected);
         client.Disconnected.connect(this.onDisconnected);
+        
+        ui.AddAction.connect(this.addTool);
+        ui.OpenUrl.connect(this.openUrl);
     },
     
     start: function()
     {
         this.setVisible(true);
+        
+        if (!this.connected)
+            this.connected = client.IsConnected();
+        if (this.connected)
+        {
+            this.tabs.currentIndex = 0;
+            this.onTabIndexChanged(this.tabs.currentIndex);
+            return;
+        }
+        
         this.onTabIndexChanged(this.tabs.currentIndex);
         
         if (this.settings.startupLoadHomePage)
@@ -169,18 +193,73 @@ var BrowserManager = Class.extend
         return p_.tabs.widget(p_.tabs.currentIndex);
     },
     
-    addTool: function(widget, index)
+    addTool: function(action, group)
     {
-        if (index == null)
-            index = -1;
-        p_.toolBar.layout().insertWidget(index, widget, 0, 0);
-        widget.destroyed.connect(p_.refreshSplitter);
+        if (action.icon.isNull())
+            action.icon = defaultIcon;
+        if (action.tooltip == null || action.tooltip == "")
+            action.tooltip = action.text;
+
+        // \todo will repolicate the action. toolbar.addAction(action) does not work in js!
+        // only down side is that if the calling party changes icon or state of the QAction
+        // the toolbar wont know about it. Bug in js qt??
+        if (group == null || group == "")
+        {
+            var act = p_.toolBar.addAction(action.icon, action.text);
+            act.tooltip = action.tooltip;
+            act.triggered.connect(action, action.trigger);
+            
+            // \todo seems like this does not work. When a script deleteLater() 
+            // its source QAction it does not come to our action
+            action.destroyed.connect(act, act.deleteLater);
+        }
+        else
+        {
+            var groupToolBar = p_.toolBarGroups[group];
+            if (groupToolBar == null)
+            {
+                var containerWidget = new QWidget();
+                containerWidget.setLayout(new QHBoxLayout());
+                containerWidget.layout().setSpacing(0);
+                containerWidget.layout().setContentsMargins(0,0,0,0);
+                
+                var nameLabel = new QLabel(group);
+                nameLabel.setStyleSheet("color: grey; font: Arial; font-size: 12px;");
+                nameLabel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding);
+                nameLabel.alignment = Qt.AlignTop;
+                
+                containerWidget.layout().addWidget(nameLabel, 0, 0);
+                
+                groupToolBar = new QToolBar();
+                groupToolBar.setFixedHeight(26);
+                groupToolBar.setStyleSheet("background-color: none; border: 0px;");
+                groupToolBar.toolButtonStyle = Qt.ToolButtonIconOnly;
+                groupToolBar.orientation = Qt.Horizontal;
+                groupToolBar.iconSize = new QSize(23,23);
+                groupToolBar.floatable = false;
+                groupToolBar.movable = false;
+                groupToolBar.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed);
+                containerWidget.layout().addWidget(groupToolBar, 0, 0);
+                
+                p_.splitter.addWidget(containerWidget);
+                
+                p_.toolBarGroups[group] = groupToolBar;
+                p_.toolBarContainers[group] = containerWidget;
+            }
+            
+            var act = groupToolBar.addAction(action.icon, action.text);
+            act.tooltip = action.tooltip;
+            act.triggered.connect(action, action.trigger);
+            
+            // \todo seems like this does not work. When a script deleteLater() 
+            // its source QAction it does not come to our action
+            action.destroyed.connect(act, act.deleteLater);
+        }
     },
     
-    refreshSplitter: function(obj)
+    refreshSplitter: function()
     {
-        p_.splitter.setStretchFactor(0, 2);
-        p_.splitter.refresh();
+        p_.splitter.restoreState(p_.splitterStartState);
     },
     
     refreshSqueezer: function()
@@ -209,6 +288,7 @@ var BrowserManager = Class.extend
     onConnected: function()
     {
         p_.connected = true;
+        p_.tabs.currentIndex = 0;
         p_.refreshSqueezer();
         p_.onTabIndexChanged(p_.tabs.currentIndex);
     },
@@ -223,6 +303,27 @@ var BrowserManager = Class.extend
             p_.tabs.setTabToolTip(0, "Login");
             p_.tabs.setTabText(0, "Login")
         }
+        
+        // Clear toolbars
+        for (var toolbarKey in p_.toolBarGroups)
+        {
+            var aToolBar = p_.toolBarGroups[toolbarKey];
+            if (aToolBar != null)
+            {
+                aToolBar.clear();
+                aToolBar.deleteLater();
+            }
+        }
+        for (var containerKey in p_.toolBarContainers)
+        {
+            var container = p_.toolBarContainers[containerKey];
+            if (container != null)
+                container.deleteLater();
+        }
+        p_.toolBarGroups = {};
+        p_.toolBarContainers = {};
+        p_.toolBar.clear();
+        p_.refreshSplitter();
     },
     
     onFavoritePressed: function()
@@ -700,11 +801,11 @@ var BrowserSettings = Class.extend
     readConfig: function()
     {
         if (!config.HasValue(this.configFile, this.urlSection, "homepage"))
-            config.Set(this.configFile, this.urlSection, "homepage", QUrl.fromUserInput("http://www.realxtend.org/").toString());
+            config.Set(this.configFile, this.urlSection, "homepage", QUrl.fromUserInput("http://login.realxtend.org/").toString());
         this.homepage = config.Get(this.configFile, this.urlSection, "homepage");
         
         if (!config.HasValue(this.configFile, this.urlSection, "newtab"))
-            config.Set(this.configFile, this.urlSection, "newtab", QUrl.fromUserInput("http://www.realxtend.org/").toString());
+            config.Set(this.configFile, this.urlSection, "newtab", QUrl.fromUserInput("http://login.realxtend.org/").toString());
         this.newTabUrl = config.Get(this.configFile, this.urlSection, "newtab");
         
         // Note: QSettings/QVariant and js booleans dont mix up too well. It will give you a string back of the config value.
