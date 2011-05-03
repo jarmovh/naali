@@ -6,9 +6,12 @@ set -x
 # following ppa sources using add-apt-repository or the software
 # sources gui tool: ppa:mapopa/qt4.6 ppa:andrewfenn/ogredev
 
-deps=$HOME/naali-build/naali-deps
-viewer=$deps/../naali
-viewerdeps_svn=http://realxtend-naali-deps.googlecode.com/svn/
+viewer=$(dirname $(readlink -f $0))/..
+deps=$viewer/../naali-deps
+mkdir -p $deps
+deps=$(cd $deps && pwd)
+viewer=$(cd $viewer && pwd)
+
 prefix=$deps/install
 build=$deps/build
 tarballs=$deps/tarballs
@@ -86,7 +89,7 @@ else
 fi
 
 what=knet
-if false && test -f $tags/$what-done; then 
+if test -f $tags/$what-done; then 
    echo $what is done
 else
     cd $build
@@ -207,4 +210,7 @@ EOF
 chmod +x ccache-g++-wrapper
 NAALI_DEP_PATH=$prefix cmake -DCMAKE_CXX_COMPILER="$viewer/ccache-g++-wrapper" .
 make -j $nprocs VERBOSE=1
+
+sed '/PluginFolder/c \PluginFolder=/usr/lib64/OGRE' $viewer/bin/plugins-unix.cfg > tmpfile ; mv tmpfile /$viewer/bin/plugins-unix.cfg
+
 
