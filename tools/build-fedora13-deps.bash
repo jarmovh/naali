@@ -96,7 +96,8 @@ else
     rm -rf knet
     hg clone -r stable http://bitbucket.org/clb/knet
     cd knet
-    sed -e "s/USE_TINYXML TRUE/USE_TINYXML FALSE/" -e "s/kNet STATIC/kNet SHARED/" -e "s/#set(USE_QT/set(USE_QT/" < CMakeLists.txt > x
+    sed -e "s/USE_TINYXML TRUE/USE_TINYXML FALSE/" -e "s/kNet STATIC/kNet SHARED/"  < CMakeLists.txt > x
+#-e "s/#set(USE_QT/set(USE_QT/"
     mv x CMakeLists.txt
     cmake . -DCMAKE_BUILD_TYPE=Debug
     make -j $nprocs
