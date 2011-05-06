@@ -167,7 +167,7 @@ fi
 
 cd $build
 what=xmlrpc-epi
-if test -f /usr/local/lib/libxmlrpc-epi-0.0.3.so; then
+if [ test ! -f /usr/local/lib/libxmlrpc-epi-0.0.3.so ]; then
 	if test -f $tags/$what-done; then
 	    echo $what is done
 	else
