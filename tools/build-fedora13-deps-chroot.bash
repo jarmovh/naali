@@ -167,10 +167,9 @@ fi
 
 cd $build
 what=xmlrpc-epi
-if [ test ! -f /usr/local/lib/libxmlrpc-epi-0.0.3.so ]; then
-	if test -f $tags/$what-done; then
-	    echo $what is done
-	else
+if [ test -f /usr/local/lib/libxmlrpc-epi-0.0.3.so ]; then
+	echo $what found 
+else
 	    pkgbase=${what}-0.54.2
 	    rm -rf $pkgbase
 	    zip=../tarballs/$pkgbase.tar.bz2
@@ -181,7 +180,6 @@ if [ test ! -f /usr/local/lib/libxmlrpc-epi-0.0.3.so ]; then
 	    make -j $nprocs
 	    make install
 	    touch $tags/$what-done
-	fi
 fi
 
 
