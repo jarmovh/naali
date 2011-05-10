@@ -179,6 +179,7 @@ else
 	    echo yes | ./configure --disable-debug --disable-static
 	    make -j $nprocs
 	    make install
+	    cp /usr/local/lib/libxmlrpc-epi* $prefix/lib/
 	    touch $tags/$what-done
 fi
 
