@@ -40,7 +40,7 @@ yum install -y scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
 libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
-wget qt qt4 mercurial unzip libxslt qtscriptbindings freeglut-devel \
+wget qt qt4 mercurial unzip libxslt qtscriptbindings freeglut-devel xmlrpc-epi\
 
 if test -f /usr/bin/qmake; then
 	echo qmake exists
@@ -131,12 +131,14 @@ ver=2.0.1
 if test -f $tags/$what-done; then
     echo $what is done
 else
-    #rm -rf $what$ver
+    rm -rf $what$ver
     zip=../tarballs/$what$ver.zip
     test -f $zip || wget -O $zip http://downloads.sourceforge.net/project/pythonqt/pythonqt/$what-$ver/$what$ver.zip
-    #unzip $zip
+    unzip $zip
     cd $what$ver
+	ln -s /usr/bin/python2.7-config /usr/bin/python2.6-config
     qmake
+	sed -i 's/CocoaRequestModal = QEvent::CocoaRequestModal//g' $what$ver/generated_cpp/com_trolltech_qt_core/com_trolltech_qt_core0.h
     make -j2
     rm -f $prefix/lib/lib$what*
     cp -a lib/lib$what* $prefix/lib/
@@ -163,24 +165,6 @@ else
     # luckily only extensionless headers under src match Qt*:
     cp src/qt*.h src/Qt* $prefix/include/
     touch $tags/$what-done
-fi
-
-cd $build
-what=xmlrpc-epi
-if [ test -f /usr/local/lib/libxmlrpc-epi-0.0.3.so ]; then
-	echo $what found 
-else
-	    pkgbase=${what}-0.54.2
-	    rm -rf $pkgbase
-	    zip=../tarballs/$pkgbase.tar.bz2
-	    test -f $zip || wget -O $zip http://sourceforge.net/projects/xmlrpc-epi/files/xmlrpc-epi-base/0.54.2/$pkgbase.tar.bz2
-	    tar -xjf $zip
-	    cd $pkgbase
-	    echo yes | ./configure --disable-debug --disable-static
-	    make -j $nprocs
-	    make install
-	    cp /usr/local/lib/libxmlrpc-epi* $prefix/lib/
-	    touch $tags/$what-done
 fi
 
 
