@@ -138,7 +138,7 @@ else
     cd $what$ver
 	ln -s /usr/bin/python2.7-config /usr/bin/python2.6-config
     qmake
-	sed -i 's/CocoaRequestModal = QEvent::CocoaRequestModal//g' $what$ver/generated_cpp/com_trolltech_qt_core/com_trolltech_qt_core0.h
+	sed -i 's/CocoaRequestModal = QEvent::CocoaRequestModal//g' generated_cpp/com_trolltech_qt_core/com_trolltech_qt_core0.h
     make -j2
     rm -f $prefix/lib/lib$what*
     cp -a lib/lib$what* $prefix/lib/
