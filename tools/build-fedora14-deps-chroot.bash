@@ -136,7 +136,11 @@ else
     test -f $zip || wget -O $zip http://downloads.sourceforge.net/project/pythonqt/pythonqt/$what-$ver/$what$ver.zip
     unzip $zip
     cd $what$ver
-	ln -s /usr/bin/python2.7-config /usr/bin/python2.6-config
+
+	if [ ! -f /usr/bin/python2.6-config ]
+		ln -s /usr/bin/python2.7-config /usr/bin/python2.6-config
+	fi
+
     qmake
 	sed -i 's/CocoaRequestModal = QEvent::CocoaRequestModal//g' generated_cpp/com_trolltech_qt_core/com_trolltech_qt_core0.h
     make -j2
