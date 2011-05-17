@@ -40,7 +40,7 @@ yum install -y scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
 libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
-wget qt qt4 mercurial unzip libxslt qtscriptbindings freeglut-devel xmlrpc-epi-devel\
+wget qt qt4 mercurial unzip libxslt qtscriptbindings freeglut-devel xmlrpc-epi-devel \
 qt-webkit-devel \
 
 if test -f /usr/bin/qmake; then
