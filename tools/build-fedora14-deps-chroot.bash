@@ -142,7 +142,7 @@ else
 	fi
 
     qmake
-	sed -i 's/,CocoaRequestModal = QEvent::CocoaRequestModal//g' generated_cpp/com_trolltech_qt_core/com_trolltech_qt_core0.h
+	sed -i 's/CocoaRequestModal = QEvent::CocoaRequestModal,//g' generated_cpp/com_trolltech_qt_core/com_trolltech_qt_core0.h
     make -j2
     rm -f $prefix/lib/lib$what*
     cp -a lib/lib$what* $prefix/lib/
