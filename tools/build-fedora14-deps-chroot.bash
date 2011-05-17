@@ -137,7 +137,7 @@ else
     unzip $zip
     cd $what$ver
 
-	if [ ! -f /usr/bin/python2.6-config ]
+	if [ ! -f /usr/bin/python2.6-config ]; then
 		ln -s /usr/bin/python2.7-config /usr/bin/python2.6-config
 	fi
 
