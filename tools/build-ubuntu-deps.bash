@@ -43,12 +43,14 @@ if lsb_release -c | egrep -q "lucid|maverick|natty"; then
 	sudo aptitude -y install scons python-dev libogg-dev libvorbis-dev \
 	 libopenjpeg-dev libcurl4-gnutls-dev libexpat1-dev libphonon-dev \
 	 build-essential g++ libogre-dev libboost-all-dev libpoco-dev \
-	 python-gtk2-dev libdbus-glib-1-dev ccache libqt4-dev python-dev \
-         libtelepathy-farsight-dev libnice-dev libgstfarsight0.10-dev \
-         libtelepathy-qt4-dev python-gst0.10-dev freeglut3-dev \
+	 ccache libqt4-dev python-dev \
+	 freeglut3-dev \
 	 libxmlrpc-epi-dev bison flex libxml2-dev cmake libalut-dev \
 	 liboil0.3-dev mercurial unzip xsltproc libqtscript4-qtbindings
 fi
+	 #python-gtk2-dev libdbus-glib-1-dev \
+         #libtelepathy-farsight-dev libnice-dev libgstfarsight0.10-dev \
+         #libtelepathy-qt4-dev python-gst0.10-dev \ 
 
 function build-regular {
     urlbase=$1
@@ -167,6 +169,8 @@ else
     test -f $zip || wget -O $zip http://downloads.sourceforge.net/project/pythonqt/pythonqt/$what-$ver/$what$ver.zip
     unzip $zip
     cd $what$ver
+    pyver=$(python -c 'import sys; print sys.version[:3]')
+    sed -i "s/PYTHON_VERSION=.*/PYTHON_VERSION=$pyver/" build/python.prf
     fn=generated_cpp/com_trolltech_qt_core/com_trolltech_qt_core0.h
     sed 's/CocoaRequestModal = QEvent::CocoaRequestModal,//' < $fn > x
     mv x $fn
@@ -204,7 +208,7 @@ ln -fvs /usr/include/xmlrpc-epi/*.h $prefix/include/
 if lsb_release -c | grep -q lucid; then
     : # nothing
 else
-    build-regular http://nice.freedesktop.org/releases/ libnice 0.0.10
+    : #build-regular http://nice.freedesktop.org/releases/ libnice 0.0.10
 fi
 
 

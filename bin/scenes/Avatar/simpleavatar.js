@@ -81,6 +81,7 @@ function ServerInitialize() {
     me.Action("StopRotate").Triggered.connect(ServerHandleStopRotate);
     me.Action("MouseLookX").Triggered.connect(ServerHandleMouseLookX);
     me.Action("Gesture").Triggered.connect(ServerHandleGesture);
+    me.Action("Teleport").Triggered.connect(ServerHandleTeleport);
 
     rigidbody.PhysicsCollision.connect(ServerHandleCollision);
 }
@@ -97,6 +98,30 @@ function ServerUpdate(frametime) {
     }
 
     CommonUpdateAnimation(frametime);
+}
+
+function ServerHandleTeleport(coords)
+{
+    var placeable = me.GetComponentRaw("EC_Placeable");
+    var rigidbody = me.GetComponentRaw("EC_RigidBody");
+    var xyz = coords.split(",");
+    var newpos = placeable.transform;
+
+    newpos.pos.x = parseFloat(xyz[0]);
+    newpos.pos.y = parseFloat(xyz[1]);
+    newpos.pos.z = parseFloat(xyz[2]);
+
+    if (flying)
+        me.placeable.transform = newpos;
+    else
+    {
+        rigidbody.mass = 0;
+        me.rigidbody = rigidbody;
+        me.placeable.transform = newpos;
+        rigidbody = me.rigidbody;
+        rigidbody.mass = avatar_mass;
+        me.rigidbody = rigidbody;
+    }
 }
 
 function ServerHandleCollision(ent, pos, normal, distance, impulse, newCollision) {
@@ -362,9 +387,9 @@ function ClientInitialize() {
         {
             var avatar = me.GetOrCreateComponentRaw("EC_Avatar");
             var r = avatar.appearanceRef;
-            r.ref = "local://default_avatar.xml";
+            r.ref = avatarurl;
             avatar.appearanceRef = r;
-            print("Avatar from login parameters enabled:", avatarAssetRef);
+            debug.Log("Avatar from login parameters enabled: " + avatarurl);
         }
     }
     else
@@ -780,11 +805,18 @@ function ClientHandleMouseMove(mouseevent)
     
     if (!first_person)
     {
-        //\ note: Right click look also hides/shows cursor, so this is to ensure that the cursor is visible in non-fps mode
-        //\       This may be kinda bad if the stack contains more cursors
+        // \note Right click look also hides/shows cursor, so this is to ensure that the cursor is visible in non-fps mode
         if (!crosshair.isUsingLabel)
+        {
             if (input.IsMouseCursorVisible())
-                QApplication.restoreOverrideCursor();
+            {
+                var cursor = QApplication.overrideCursor;
+                if (cursor == null)
+                    return;
+                if (crosshair.cursor.pixmap() == cursor.pixmap())
+                    QApplication.restoreOverrideCursor();
+            }
+        }
         return;
     }
 
