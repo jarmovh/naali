@@ -10,8 +10,8 @@ function errorCheck {
     fi
 }
 
-export PYTHON_PATH=/usr/bin/
-export PYTHON_LIB=/usr/lib/python2.7/
+#export PYTHON_PATH=/usr/bin/
+#export PYTHON_LIB=/usr/lib/python2.7/
 
 if [ $(pwd) == / ]; then
     cd /builddir
