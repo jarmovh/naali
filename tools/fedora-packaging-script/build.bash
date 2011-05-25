@@ -121,7 +121,7 @@ if [ ! -d $WORKDIR/rinse ]; then
 fi
 
 
-#sudo rm -fr $BUILDDIR
+sudo rm -fr $BUILDDIR
 echo $BUILDDIR
 
 sudo rinse --arch=$ARCH --directory=$BUILDDIR --distribution=$FEDORA_RELEASE
