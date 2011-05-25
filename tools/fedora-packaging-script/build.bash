@@ -137,7 +137,10 @@ echo $BUILDDIR
 
 sudo rinse --arch=$ARCH --directory=$BUILDDIR --distribution=$FEDORA_RELEASE
 
+if [ -d $WORKDIR/rpmcache ]; then
+	sudo cp $WORKDIR/rpmcache/*.rpm $WORKDIR/$BUILDDIR/var/cache/yum/fedora/packages/
 
+sudo mkdir $WORKDIR/rpmcache
 sudo mkdir $WORKDIR/$BUILDDIR/builddir
 sudo mkdir $WORKDIR/$BUILDDIR/builddir/naali
 sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/
@@ -148,6 +151,7 @@ sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
 errorCheck "Problem when cloning git"
 
 
+
 sudo mount --bind /proc $BUILDDIR/proc
 
 sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER| tee log/$TIMESTAMP.log
@@ -156,7 +160,7 @@ sudo umount $INSTALL_DIR/proc
 
 sudo cp $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm $WORKDIR
 sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
-
+sudo cp $WORKDIR/$BUILDDIR/var/cache/yum/fedora/packages/*.rpm $WORKDIR/rpmcache
 
 
 
