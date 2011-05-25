@@ -7,6 +7,17 @@ ARCH=amd64
 FEDORA_RELEASE="fedora-13"
 VER=0.0
 
+#IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
+function errorCheck {
+    if [ $? != 0 ];
+    then
+        echo "error" $1
+	sudo umount $INSTALL_DIR/proc
+        exit 1
+    fi
+}
+
+
 USAGE="\nUsage: $0 [--help] [-i install directory] [-b branch] [-t tag] [-a architecture] [-f Fedora release] [-v version] [-d use timestamp]  	
 		\n	 Default settings 
       	\n   Install directory: $BUILDDIR
@@ -133,7 +144,8 @@ sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r specs $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r usr_tundra $WORKDIR/$BUILDDIR/builddir/
 
-git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
+sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
+errorCheck "Problem when cloning git"
 
 
 sudo mount --bind /proc $BUILDDIR/proc

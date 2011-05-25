@@ -1,6 +1,14 @@
 #!/bin/bash
-
 # Script to build naali and dependencies for Fedora 14
+
+#IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
+function errorCheck {
+    if [ $? -ne 0 ];
+    then
+        echo $1
+        exit $?
+    fi
+}
 
 export PYTHON_PATH=/usr/bin/
 export PYTHON_LIB=/usr/lib/python2.7/
@@ -51,6 +59,7 @@ cd $naalidir/tools
 sed -i 's/ccache g++ -O -g /ccache g++ -O /' $naalidir/tools/build-fedora14-deps.bash
 
 ./build-fedora14-deps.bash
+errorCheck "Check for error with build process"
 
 cat > $naalidir/bin/run-viewer.sh << EOF
 #!/bin/bash
