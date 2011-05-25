@@ -21,7 +21,7 @@ tags=$deps/tags
 
 # -j<n> param for make, for how many processes to run concurrently
 
-nprocs=2
+nprocs=`grep -c "^processor" /proc/cpuinfo`
 
 mkdir -p $tarballs $build $prefix/{lib,share,etc,include} $tags
 
@@ -35,8 +35,8 @@ export CC="ccache gcc"
 export CXX="ccache g++"
 export CCACHE_DIR=$deps/ccache
 
-sudo yum groupinstall "Development Tools"
-sudo yum install scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
+yum groupinstall -y "Development Tools"
+yum install -y scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
 libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
@@ -45,7 +45,7 @@ wget qt qt4 mercurial unzip libxslt qtscriptbindings freeglut-devel \
 if test -f /usr/bin/qmake; then
 	echo qmake exists
 else
-	sudo ln -s /usr/bin/qmake-qt4 /usr/bin/qmake
+	ln -s /usr/bin/qmake-qt4 /usr/bin/qmake
 fi
 
 function build-regular {
@@ -167,10 +167,9 @@ fi
 
 cd $build
 what=xmlrpc-epi
-if [ test ! -f /usr/local/lib/libxmlrpc-epi-0.0.3.so ]; then
-	if test -f $tags/$what-done; then
-	    echo $what is done
-	else
+if [ test -f /usr/local/lib/libxmlrpc-epi-0.0.3.so ]; then
+	echo $what found 
+else
 	    pkgbase=${what}-0.54.2
 	    rm -rf $pkgbase
 	    zip=../tarballs/$pkgbase.tar.bz2
@@ -179,9 +178,9 @@ if [ test ! -f /usr/local/lib/libxmlrpc-epi-0.0.3.so ]; then
 	    cd $pkgbase
 	    echo yes | ./configure --disable-debug --disable-static
 	    make -j $nprocs
-	    sudo make install
+	    make install
+	    cp /usr/local/lib/libxmlrpc-epi* $prefix/lib/
 	    touch $tags/$what-done
-	fi
 fi
 
 
