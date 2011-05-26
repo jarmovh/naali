@@ -39,9 +39,11 @@ yum install -y git-core
 #else
 	cd $naalidir
 #	git stash
+	git checkout master
 	git pull git://github.com/jarmovh/naali.git tundra
 	cd ..
 #fi
+
 
 #sed -e "s#.x86_64#.$ARCH#g" /builddir/specs/tundra-fedora-0.0-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-0.0-1.spec
 

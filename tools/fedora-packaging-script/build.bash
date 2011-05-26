@@ -150,7 +150,9 @@ sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r specs $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r usr_tundra $WORKDIR/$BUILDDIR/builddir/
 
-sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
+
+sudo git pull git://github.com/jarmovh/naali.git tundra
+sudo git clone git://github.com/realXtend/naali.git $WORKDIR/$BUILDDIR/builddir/naali
 errorCheck "Problem when cloning git"
 
 
