@@ -138,7 +138,7 @@ echo $BUILDDIR
 sudo rinse --arch=$ARCH --directory=$BUILDDIR --distribution=$FEDORA_RELEASE
 
 if [ -d $WORKDIR/rpmcache ]; then
-	sudo cp $WORKDIR/rpmcache/ $WORKDIR/$BUILDDIR/var/cache/yum/
+	sudo cp -r $WORKDIR/rpmcache/* $WORKDIR/$BUILDDIR/var/cache/
 else
 	sudo mkdir $WORKDIR/rpmcache
 fi
