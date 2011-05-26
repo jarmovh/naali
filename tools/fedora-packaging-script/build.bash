@@ -138,7 +138,9 @@ echo $BUILDDIR
 sudo rinse --arch=$ARCH --directory=$BUILDDIR --distribution=$FEDORA_RELEASE
 
 if [ -d $WORKDIR/rpmcache ]; then
-	sudo cp $WORKDIR/rpmcache/*.rpm $WORKDIR/$BUILDDIR/var/cache/yum/fedora/packages/
+	sudo cp $WORKDIR/rpmcache/ $WORKDIR/$BUILDDIR/var/cache/yum/
+else
+	sudo mkdir $WORKDIR/rpmcache
 fi
 
 sudo mkdir $WORKDIR/rpmcache
@@ -161,7 +163,7 @@ sudo umount $INSTALL_DIR/proc
 
 sudo cp $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm $WORKDIR
 sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
-sudo cp $WORKDIR/$BUILDDIR/var/cache/yum/fedora/packages/*.rpm $WORKDIR/rpmcache
+sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache
 
 
 
