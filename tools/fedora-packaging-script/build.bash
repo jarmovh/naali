@@ -137,13 +137,12 @@ echo $BUILDDIR
 
 sudo rinse --arch=$ARCH --directory=$BUILDDIR --distribution=$FEDORA_RELEASE
 
-if [ -d $WORKDIR/rpmcache ]; then
+if [ -d $WORKDIR/rpmcache-$FEDORA_RELEASE ]; then
 	sudo cp -r $WORKDIR/rpmcache-$FEDORA_RELEASE/* $WORKDIR/$BUILDDIR/var/cache/
 else
 	sudo mkdir $WORKDIR/rpmcache-$FEDORA_RELEASE
 fi
 
-sudo mkdir $WORKDIR/rpmcache
 sudo mkdir $WORKDIR/$BUILDDIR/builddir
 sudo mkdir $WORKDIR/$BUILDDIR/builddir/naali
 sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/

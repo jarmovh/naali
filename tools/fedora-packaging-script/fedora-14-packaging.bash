@@ -36,6 +36,7 @@ yum install -y git-core
 #else
 	cd $naalidir
 #	git stash
+	git checkout master
 	git pull git://github.com/jarmovh/naali.git tundra
 	cd ..
 #fi
