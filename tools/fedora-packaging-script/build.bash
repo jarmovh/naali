@@ -138,9 +138,9 @@ echo $BUILDDIR
 sudo rinse --arch=$ARCH --directory=$BUILDDIR --distribution=$FEDORA_RELEASE
 
 if [ -d $WORKDIR/rpmcache ]; then
-	sudo cp -r $WORKDIR/rpmcache/* $WORKDIR/$BUILDDIR/var/cache/
+	sudo cp -r $WORKDIR/rpmcache-$FEDORA_RELEASE/* $WORKDIR/$BUILDDIR/var/cache/
 else
-	sudo mkdir $WORKDIR/rpmcache
+	sudo mkdir $WORKDIR/rpmcache-$FEDORA_RELEASE
 fi
 
 sudo mkdir $WORKDIR/rpmcache
@@ -163,7 +163,7 @@ sudo umount $INSTALL_DIR/proc
 
 sudo cp $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm $WORKDIR
 sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
-sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache
+sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
 
 
 
