@@ -25,7 +25,7 @@ nprocs=`grep -c "^processor" /proc/cpuinfo`
 
 mkdir -p $tarballs $build $prefix/{lib,share,etc,include} $tags
 
-export PATH=$prefix/bin:$PATH
+export PATH=$prefix/bin:/usr/lib64:$PATH
 export PKG_CONFIG_PATH=$prefix/lib/pkgconfig
 export LDFLAGS="-L$prefix/lib -Wl,-rpath -Wl,$prefix/lib"
 export LIBRARY_PATH=$prefix/lib
