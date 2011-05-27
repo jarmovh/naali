@@ -197,7 +197,7 @@ cat > ccache-g++-wrapper <<EOF
 exec ccache g++ -O \$@
 EOF
 chmod +x ccache-g++-wrapper
-NAALI_DEP_PATH=$prefix cmake -DCMAKE_CXX_FLAGS:STRING="-lrt -lboost_filesystem" -DCMAKE_CXX_COMPILER="$viewer/ccache-g++-wrapper" .
+NAALI_DEP_PATH=$prefix cmake -DCMAKE_CXX_FLAGS:STRING="-lrt -lboost_filesystem -lboost_thread-mt" -DCMAKE_CXX_COMPILER="$viewer/ccache-g++-wrapper" .
 make -j $nprocs VERBOSE=1
 
 sed '/PluginFolder/c \PluginFolder=/usr/lib64/OGRE' $viewer/bin/plugins-unix.cfg > tmpfile ; mv tmpfile /$viewer/bin/plugins-unix.cfg
