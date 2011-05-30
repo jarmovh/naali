@@ -172,7 +172,7 @@ sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
 if [ $SERVER ]; then
 	cd $WORKDIR
 	sudo chmod 755 upload.bash
-	sudo ./upload.bash fedora13
+	sudo ./upload.bash $FEDORA_RELEASE
 	rm *.rpm
 fi
 
