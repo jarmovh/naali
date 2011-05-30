@@ -111,7 +111,7 @@ while [ $# -gt 0 ]; do
         ;;
 	-d)
 	    shift
-	    VER=X.$TIMESTAMP
+	    VER=$VER-$TIMESTAMP
             echo "Version: $VER"
 	    shift;
         ;;
