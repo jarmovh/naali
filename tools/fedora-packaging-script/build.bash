@@ -6,6 +6,7 @@ TIMESTAMP=`date '+%y%m%d%H%M'`
 ARCH=amd64
 FEDORA_RELEASE="fedora-13"
 VER=0.0
+TAG=none
 
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
@@ -151,14 +152,14 @@ sudo cp -r usr_tundra $WORKDIR/$BUILDDIR/builddir/
 
 
 sudo git pull git://github.com/jarmovh/naali.git tundra
-sudo git clone git://github.com/realXtend/naali.git $WORKDIR/$BUILDDIR/builddir/naali
+sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
 errorCheck "Problem when cloning git"
 
 
 
 sudo mount --bind /proc $BUILDDIR/proc
 
-sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER| tee log/$TIMESTAMP.log
+sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER $TAG | tee log/$TIMESTAMP.log
 
 sudo umount $INSTALL_DIR/proc
 

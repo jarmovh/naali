@@ -22,6 +22,7 @@ fi
 ARCH=$1
 TIMESTAMP=$2
 VER=$3
+TAG=$4
 
 
 rpmbuild=/rpmbuild
@@ -34,12 +35,30 @@ pcount=`grep -c "^processor" /proc/cpuinfo`
 
 yum install -y git-core
 
+cd $naalidir
+
+if [ $TAG != "none" ];
+then
+	git show-ref $TAG
+	if [ $? -ne 0 ];
+	then
+		echo "Invalid tag" $TAG
+		exit 1
+	fi
+	git checkout $TAG
+	VER=$TAG	
+else
+	VER=`grep "Tundra" $INSTALL_DIR/$REX_DIR/naali/Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
+fi
+
+
+
 #if [ ! -d $naalidir ]; then
 #	git clone git://github.com/jarmovh/naali.git ./naali
 #else
-	cd $naalidir
+	
 #	git stash
-	git checkout master
+#	git checkout master
 	git pull git://github.com/jarmovh/naali.git tundra
 	cd ..
 #fi
