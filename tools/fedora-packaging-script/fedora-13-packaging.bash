@@ -52,10 +52,6 @@ else
 	VER=`grep "Tundra" $naalidir/Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
 fi
 
-if [ $USETSTAMP ]; then
-	VER=$VER-$TIMESTAMP
-fi
-
 
 #if [ ! -d $naalidir ]; then
 #	git clone git://github.com/jarmovh/naali.git ./naali
@@ -111,5 +107,9 @@ chmod 755 run-viewer.sh
 
 rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' --define '_signature gpg' --define '_gpg_name Jarmo Vaehae' --sign $rpmbuild/SPECS/tundra-fedora-scenes-$VER-fc13.spec
 rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/tundra-fedora-$VER-fc13.spec
+
+if [ $USETSTAMP ]; then
+	mv $rpmbuild/RPMS/x86_64/Tundra-Fedora-$VER-fc13.x86_64.rpm $rpmbuild/RPMS/x86_64/Tundra-Fedora-$VER-fc13.x86_64-$TIMESTAMP.rpm	
+fi
 
 

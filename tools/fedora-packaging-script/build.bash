@@ -37,7 +37,7 @@ while [ $# -gt 0 ]; do
         exit 0
         ;;
 	-d)
-		VER=$VER-$TIMESTAMP
+		VER=$VER.$TIMESTAMP
 		USETSTAMP=true;
         echo "Version: $VER"
 		shift
