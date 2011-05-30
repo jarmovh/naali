@@ -47,6 +47,10 @@ else
 	VER=`grep "Tundra" $naalidir/Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
 fi
 
+if [ $USETSTAMP ]; then
+	VER=$VER-$TIMESTAMP
+fi
+
 #if [ ! -d $naalidir ]; then
 #	git clone git://github.com/jarmovh/naali.git ./naali
 #else

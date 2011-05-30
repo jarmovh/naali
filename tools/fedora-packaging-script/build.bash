@@ -7,6 +7,7 @@ ARCH=amd64
 FEDORA_RELEASE="fedora-13"
 VER=0.0
 TAG=none
+USETSTAMP=false
 
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
@@ -35,6 +36,12 @@ while [ $# -gt 0 ]; do
         echo -e $USAGE
         exit 0
         ;;
+	-d)
+		VER=$VER-$TIMESTAMP
+		USETSTAMP=true;
+        echo "Version: $VER"
+		shift
+		;;
 	-i)
 	    shift
         if [ -z $1 ]; then
@@ -109,12 +116,6 @@ while [ $# -gt 0 ]; do
         echo "Version: $VER"
 	    shift;
         ;;
-	-d)
-	    shift
-	    VER=$VER-$TIMESTAMP
-            echo "Version: $VER"
-	    shift;
-        ;;
     *)
         # getopts issues an error message
         echo "Unknown param $1"
@@ -155,17 +156,15 @@ sudo git pull git://github.com/jarmovh/naali.git tundra
 sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
 errorCheck "Problem when cloning git"
 
-
-
 sudo mount --bind /proc $BUILDDIR/proc
 
-sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER $TAG | tee log/$TIMESTAMP.log
-
-sudo umount $INSTALL_DIR/proc
+sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER $TAG $USETSTAMP | tee log/$TIMESTAMP.log
 
 sudo cp $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm $WORKDIR
 sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
 sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
+
+sudo umount $INSTALL_DIR/proc
 
 
 

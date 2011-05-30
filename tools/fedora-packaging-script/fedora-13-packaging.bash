@@ -23,6 +23,7 @@ ARCH=$1
 TIMESTAMP=$2
 VER=$3
 TAG=$4
+USETSTAMP=$5
 
 
 rpmbuild=/rpmbuild
@@ -51,6 +52,9 @@ else
 	VER=`grep "Tundra" $naalidir/Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
 fi
 
+if [ $USETSTAMP ]; then
+	VER=$VER-$TIMESTAMP
+fi
 
 
 #if [ ! -d $naalidir ]; then
