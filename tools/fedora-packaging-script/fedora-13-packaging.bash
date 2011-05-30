@@ -48,7 +48,7 @@ then
 	git checkout $TAG
 	VER=$TAG	
 else
-	VER=`grep "Tundra" $INSTALL_DIR/$REX_DIR/naali/Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
+	VER=`grep "Tundra" $naalidir/Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
 fi
 
 
