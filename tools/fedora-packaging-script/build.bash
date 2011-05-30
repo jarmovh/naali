@@ -2,12 +2,13 @@
 
 WORKDIR=$(pwd)
 BUILDDIR=fedorabuild
-TIMESTAMP=`date '+%y%m%d%H%M'`
+TIMESTAMP=`date '+%y%m%d'`
 ARCH=amd64
 FEDORA_RELEASE="fedora-13"
 VER=0.0
 TAG=none
 USETSTAMP=false
+SERVER=false
 
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
@@ -20,7 +21,7 @@ function errorCheck {
 }
 
 
-USAGE="\nUsage: $0 [--help] [-i install directory] [-b branch] [-t tag] [-a architecture] [-f Fedora release] [-v version] [-d use timestamp]  	
+USAGE="\nUsage: $0 [--help] [-i install directory] [-b branch] [-t tag] [-a architecture] [-f Fedora release] [-v version] [-d use timestamp] [-s server mode]
 		\n	 Default settings 
       	\n   Install directory: $BUILDDIR
       	\n   Branch options: tundra
@@ -40,6 +41,10 @@ while [ $# -gt 0 ]; do
 		VER=$VER.$TIMESTAMP
 		USETSTAMP=true;
         echo "Version: $VER"
+		shift
+		;;
+	-d)
+		SERVER=true
 		shift
 		;;
 	-i)
@@ -163,6 +168,13 @@ sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $
 sudo cp $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm $WORKDIR
 sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
 sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
+
+if [ $SERVER ]; then
+	cd $WORKDIR
+	sudo chmod 755 upload.bash
+	sudo ./upload.bash fedora13
+	rm *.rpm
+fi
 
 sudo umount $INSTALL_DIR/proc
 
