@@ -62,6 +62,7 @@ cd ..
 #sed -e "s#.x86_64#.$ARCH#g" /builddir/specs/tundra-fedora-0.0-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-0.0-1.spec
 
 mv /builddir/specs/tundra-fedora-0.0-fc13.spec /builddir/specs/tundra-fedora-$VER-fc13.spec
+mv /builddir/specs/tundra-fedora-scenes-0.0-fc13.spec /builddir/specs/tundra-fedora-scenes-$VER-fc13.spec
 
 sed -e "s#/naali-build#$workdir#g" /builddir/specs/tundra-fedora-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-$VER-fc13.spec
 sed -e 's#$HOME##g' /builddir/specs/tundra-fedora-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-$VER-fc13.spec
