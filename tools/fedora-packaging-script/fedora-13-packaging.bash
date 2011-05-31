@@ -54,9 +54,7 @@ fi
 
 git remote add upstream git://github.com/realXtend/naali.git
 git fetch upstream
-git branch master
-git checkout master
-git merge -s recursive remotes/upstream/master
+git merge -s recursive remotes/upstream/tundra
 cd ..
 
 

@@ -49,9 +49,7 @@ fi
 
 git remote add upstream git://github.com/realXtend/naali.git
 git fetch upstream
-git branch master
-git checkout master
-git merge -s recursive remotes/upstream/master
+git merge -s recursive remotes/upstream/tundra
 cd ..
 
 #sed -e "s#.x86_64#.$ARCH#g" /builddir/specs/tundra-fedora-0.0-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-0.0-1.spec
