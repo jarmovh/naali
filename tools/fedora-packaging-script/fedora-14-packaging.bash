@@ -47,17 +47,12 @@ else
 	VER=`grep "Tundra" $naalidir/Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
 fi
 
-
-#if [ ! -d $naalidir ]; then
-#	git clone git://github.com/jarmovh/naali.git ./naali
-#else
-#	git stash
-#	git checkout master
-#	git pull git://github.com/jarmovh/naali.git tundra
-	git remote add -f upstream git://github.com/realXtend/naali.git
-	git checkout master
-	cd ..
-#fi
+git remote add upstream git://github.com/realXtend/naali.git
+git fetch upstream
+git branch master
+git checkout master
+git merge -s recursive remotes/upstream/master
+cd ..
 
 #sed -e "s#.x86_64#.$ARCH#g" /builddir/specs/tundra-fedora-0.0-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-0.0-1.spec
 
