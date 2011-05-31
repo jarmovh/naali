@@ -53,7 +53,9 @@ fi
 #else
 #	git stash
 #	git checkout master
-	git pull git://github.com/jarmovh/naali.git tundra
+#	git pull git://github.com/jarmovh/naali.git tundra
+	git remote add -f upstream git://github.com/realXtend/naali.git
+	git checkout master
 	cd ..
 #fi
 
