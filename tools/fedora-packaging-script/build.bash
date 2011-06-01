@@ -176,7 +176,7 @@ if [ $SERVER ]; then
 	rm *.rpm
 fi
 
-sudo umount -l $INSTALL_DIR/proc
+sudo umount -f $INSTALL_DIR/proc
 
 
 

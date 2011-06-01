@@ -20,6 +20,8 @@ fi
 ARCH=$1
 TIMESTAMP=$2
 VER=$3
+TAG=$4
+USETSTAMP=$5
 
 rpmbuild=/rpmbuild
 naalidir=$(pwd)/naali
@@ -33,11 +35,9 @@ yum install -y git-core
 
 cd $naalidir
 
-if [ $TAG != "none" ];
-then
+if [ $TAG != "none" ]; then
 	git show-ref $TAG
-	if [ $? -ne 0 ];
-	then
+	if [ $? -ne 0 ]; then
 		echo "Invalid tag" $TAG
 		exit 1
 	fi
