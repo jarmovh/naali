@@ -94,8 +94,8 @@ cd $naalidir/bin/
 chmod 755 run-server.sh
 chmod 755 run-viewer.sh
 
-rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' --define '_signature gpg' --define "_gpg_name Jarmo Vähä" $rpmbuild/SPECS/tundra-fedora-scenes-$VER-1.spec
-rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' --define '_signature gpg' --define "_gpg_name Jarmo Vähä" $rpmbuild/SPECS/tundra-fedora-$VER-fc14.spec
+rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/tundra-fedora-scenes-$VER-1.spec
+rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/tundra-fedora-$VER-fc14.spec
 
 if [ $USETSTAMP ]; then
 	mv $rpmbuild/RPMS/x86_64/Tundra-Fedora-$VER-fc14.x86_64.rpm $rpmbuild/RPMS/x86_64/Tundra-Fedora-$VER-fc14.x86_64-$TIMESTAMP.rpm	

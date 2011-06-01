@@ -101,7 +101,7 @@ cd $naalidir/bin/
 chmod 755 run-server.sh
 chmod 755 run-viewer.sh
 
-rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' --define '_signature gpg' --define '_gpg_name Jarmo Vaehae' --sign $rpmbuild/SPECS/tundra-fedora-scenes-$VER-fc13.spec
+rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/tundra-fedora-scenes-$VER-1.spec
 rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/tundra-fedora-$VER-fc13.spec
 
 if [ $USETSTAMP ]; then
