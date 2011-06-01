@@ -59,8 +59,8 @@ mv /builddir/specs/tundra-fedora-scenes-0.0-1.spec /builddir/specs/tundra-fedora
 
 sed -e "s#/naali-build#$workdir#g" /builddir/specs/tundra-fedora-$VER-fc14.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-$VER-fc14.spec
 sed -e 's#$HOME##g' /builddir/specs/tundra-fedora-$VER-fc14.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-$VER-fc14.spec
-sed -e "s#/naali-build#$workdir#g" /builddir/specs/tundra-fedora-scenes-$VER-fc14.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-scenes-$VER-fc14.spec
-sed -e 's#$HOME##g' /builddir/specs/tundra-fedora-scenes-$VER-fc14.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-scenes-$VER-fc14.spec
+sed -e "s#/naali-build#$workdir#g" /builddir/specs/tundra-fedora-scenes-$VER-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-scenes-$VER-1.spec
+sed -e 's#$HOME##g' /builddir/specs/tundra-fedora-scenes-$VER-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-scenes-$VER-1.spec
 sed -e "s#0.0#$VER#g" /builddir/specs/tundra-fedora-$VER-fc14.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-$VER-fc14.spec
 
 mkdir -p $packets/lib $packets/include $packets/../rpms
