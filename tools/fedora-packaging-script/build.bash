@@ -7,7 +7,7 @@ ARCH=amd64
 FEDORA_RELEASE="fedora-13"
 VER=0.0
 TAG=none
-USETSTAMP=false
+USESTAMP=false
 SERVER=false
 SIGNER="none"
 
@@ -40,11 +40,11 @@ while [ $# -gt 0 ]; do
         ;;
 	-d)
 		VER=$VER.$TIMESTAMP
-		USETSTAMP=true;
+		USESTAMP=true;
         echo "Version: $VER"
 		shift
 		;;
-	-d)
+	-s)
 		SERVER=true
 		shift
 		;;
@@ -153,7 +153,7 @@ fi
 
 sudo mkdir $WORKDIR/$BUILDDIR/builddir
 sudo mkdir $WORKDIR/$BUILDDIR/builddir/naali
-sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/
+sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIlR/$BUILDDIR/builddir/
 sudo cp -r specs $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r usr_tundra $WORKDIR/$BUILDDIR/builddir/
 
@@ -164,7 +164,7 @@ errorCheck "Problem when cloning git"
 
 sudo mount --bind /proc $BUILDDIR/proc
 
-sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER $TAG $USETSTAMP | tee log/$TIMESTAMP.log
+sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER $TAG $USESTAMP | tee log/$TIMESTAMP.log
 
 sudo cp $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm $WORKDIR
 sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
@@ -178,6 +178,7 @@ if [ $SERVER ]; then
 	rm *.rpm
 fi
 
+fuser -km $INSTALL_DIR/proc
 sudo umount -f $INSTALL_DIR/proc
 
 
