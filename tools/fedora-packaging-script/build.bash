@@ -178,7 +178,7 @@ if [ $SERVER ]; then
 	rm *.rpm
 fi
 
-fuser -km $INSTALL_DIR/proc
+#fuser -km $INSTALL_DIR/proc
 sudo umount -f $INSTALL_DIR/proc
 
 
