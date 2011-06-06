@@ -27,7 +27,7 @@ cp -fr $HOME/naali-build/usr_tundra/* $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0
 %files
 /opt/realXtend/*
 /usr/*
-%defattr(-,root,root)
+%defattr(755,root,root)
 %dir /opt/realXtend/
 
 %doc

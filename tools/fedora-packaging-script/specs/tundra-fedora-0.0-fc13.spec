@@ -15,19 +15,19 @@ Tundra is software to view and host interconnected 3D worlds or "3D internet".
 
 %install
 mkdir -p $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/opt/realXtend/lib
-#mkdir -p $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/usr/
+mkdir -p $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/usr/
 cp -r $HOME/naali-build/naali/bin/* $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/opt/realXtend/
 rm -fr $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/opt/realXtend/scenes
 cp -fr $HOME/naali-build/naali-deps/install/lib/* $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/opt/realXtend/lib
 cp -fr $HOME/naali-build/usr_tundra/* $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/usr/
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %files
 /opt/realXtend/*
-#/usr/*
-%defattr(-,root,root)
+/usr/*
+%defattr(755,root,root)
 %dir /opt/realXtend/
 
 %doc
