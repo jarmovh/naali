@@ -10,6 +10,8 @@ ARCH=amd64
 LINUX_RELEASE=lucid
 TAG=none
 BUILDNUMBER=0
+SERVER=false
+
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
     if [ $? != 0 ];
@@ -20,7 +22,7 @@ function errorCheck {
     fi
 }
 
-USAGE="\nUsage: $0 [--help] [-i install directory] [-b branch] [-t tag] [-a architecture] [-l linux release] 
+USAGE="\nUsage: $0 [--help] [-i install directory] [-b branch] [-t tag] [-a architecture] [-l linux release] [-s server mode] [-s server mode] 
 		\nBranch is mandatory, select naali or tundra      	
 		\nDefault settings 
       	\n   Install directory: $INSTALL_DIR
@@ -36,6 +38,10 @@ while [ $# -gt 0 ]; do
         echo -e $USAGE
         exit 0
         ;;
+	-s)
+		SERVER=true
+		shift
+		;;
 	-i)
 	    shift
         if [ -z $1 ]; then
@@ -196,7 +202,7 @@ sudo cp -r ./config $INSTALL_DIR/$REX_DIR/config
 
 #CHROOT INTO OUR UBUNTU AND RUN SCRIPT (PARAMETERS BRANCH + VERSION) + DO LOG FILE
 LOGFILE=`date|awk 'OFS="."{print $2,$3,$6,$4}'`
-sudo chroot $INSTALL_DIR $REX_DIR/config/chroot-script.bash $BRANCH $ARCH $REX_DIR $TAG $BUILDNUMBER $VER $LINUX_RELEASE 2>&1 | sudo tee ./log/$LOGFILE-$BRANCH-$ARCH.log 
+sudo chroot $INSTALL_DIR $REX_DIR/config/chroot-script.bash $BRANCH $ARCH $REX_DIR $TAG $BUILDNUMBER $VER $LINUX_RELEASE $SERVER 2>&1 | sudo tee ./log/$LOGFILE-$BRANCH-$ARCH.log 
 
 if [ ! -d ./apt_cache_$ARCH/ ];
 then
@@ -207,5 +213,9 @@ fi
 #MOVE DEB FILES BACK TO OUR CURRENT DIRECTORY
 sudo chmod -R a+rX $INSTALL_DIR/$REX_DIR/
 sudo mv -f $INSTALL_DIR/$REX_DIR/*.deb ./
+
+if [ $SERVER ]; then
+	cd ./upload.bash
+fi	
 
 sudo umount $INSTALL_DIR/proc

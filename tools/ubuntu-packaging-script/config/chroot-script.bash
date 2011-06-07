@@ -15,6 +15,8 @@ TAG=$4
 BUILDNUMBER=$5
 VER=$6
 LINUX_RELEASE=$7
+SERVER=$8
+
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
     if [ $? -ne 0 ];
@@ -121,5 +123,8 @@ cp /$REX_DIR/naali-deps/build/knet/lib/libkNet.so /$REX_DIR/$PACKAGE_NAME-$BRANC
 chmod -R a+rX $PACKAGE_NAME-$BRANCH-$VER-$ARCH
 dpkg -b  $PACKAGE_NAME-$BRANCH-$VER-$ARCH
 errorCheck "Check for error with dpkg"
-	
-mv $PACKAGE_NAME-$BRANCH-$VER-$ARCH.deb $PACKAGE_NAME-$BRANCH-$VER-$DATE-$BUILDNUMBER-$ARCH.deb
+
+if [ $SERVER ]; then
+	mv $PACKAGE_NAME-$BRANCH-$VER-$ARCH.deb $PACKAGE_NAME-$BRANCH-$VER-$DATE-$BUILDNUMBER-$ARCH.deb
+fi
+
