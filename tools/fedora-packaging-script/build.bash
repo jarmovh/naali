@@ -10,6 +10,7 @@ TAG=none
 USESTAMP=false
 SERVER=false
 SIGNER="none"
+BRANCH="tundra"
 
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
@@ -153,13 +154,14 @@ fi
 
 sudo mkdir $WORKDIR/$BUILDDIR/builddir
 sudo mkdir $WORKDIR/$BUILDDIR/builddir/naali
-sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIlR/$BUILDDIR/builddir/
+sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r specs $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r usr_tundra $WORKDIR/$BUILDDIR/builddir/
 
 
 sudo git pull git://github.com/jarmovh/naali.git tundra
 sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
+sudo git checkout $BRANCH
 errorCheck "Problem when cloning git"
 
 sudo mount --bind /proc $BUILDDIR/proc
