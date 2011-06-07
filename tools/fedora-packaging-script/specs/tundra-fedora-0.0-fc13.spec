@@ -21,7 +21,7 @@ rm -fr $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/opt/realXtend/scen
 cp -fr $HOME/naali-build/naali-deps/install/lib/* $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/opt/realXtend/lib
 cp -fr $HOME/naali-build/usr_tundra/* $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/usr/
 
-chmod 755 -R $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/usr/*
+chmod 755 -R $HOME/rpmbuild/BUILDROOT/Tundra-Fedora-0.0-fc13.x86_64/*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
