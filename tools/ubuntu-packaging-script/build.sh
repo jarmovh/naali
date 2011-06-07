@@ -215,7 +215,8 @@ sudo chmod -R a+rX $INSTALL_DIR/$REX_DIR/
 sudo mv -f $INSTALL_DIR/$REX_DIR/*.deb ./
 
 if [ $SERVER ]; then
-	cd ./upload.bash
+	cd ./upload.bash $LINUX_RELEASE
+	rm *.deb
 fi	
 
 sudo umount $INSTALL_DIR/proc
