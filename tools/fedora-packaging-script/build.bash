@@ -159,9 +159,9 @@ sudo cp -r specs $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r usr_tundra $WORKDIR/$BUILDDIR/builddir/
 
 
-sudo git pull git://github.com/jarmovh/naali.git tundra
-sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
 sudo git checkout $BRANCH
+sudo git pull git://github.com/jarmovh/naali.git $BRANCH
+sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
 errorCheck "Problem when cloning git"
 
 sudo mount --bind /proc $BUILDDIR/proc
