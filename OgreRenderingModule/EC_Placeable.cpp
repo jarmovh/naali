@@ -529,3 +529,15 @@ Vector3df EC_Placeable::GetRelativeVector(const Vector3df& vec)
     return GetOrientation() * vec;
 }
 
+//derived* getters to help with parented objs
+Vector3df EC_Placeable::GetDerivedPosition() 
+{
+    const Ogre::Vector3 v = link_scene_node_->_getDerivedPosition();
+    return Vector3df(v.x, v.y, v.z);
+}
+
+Quaternion EC_Placeable::GetDerivedOrientation() 
+{
+    const Ogre::Quaternion q = link_scene_node_->_getDerivedOrientation();
+    return Quaternion(q.x, q.y, q.z, q.w);
+}
