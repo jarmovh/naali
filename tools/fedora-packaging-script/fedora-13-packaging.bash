@@ -105,7 +105,7 @@ rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/r
 rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/realxtend-tundra-$VER-fc13.spec
 
 if [ $USESTAMP ]; then
-	mv $rpmbuild/RPMS/x86_64/realxtend-tundra-$VER-fc13.x86_64.rpm $rpmbuild/RPMS/x86_64/realxtend-tundra-$VER-fc13.x86_64-$TIMESTAMP.rpm	
+	mv $rpmbuild/RPMS/x86_64/realXtend-Tundra-$VER-fc13.x86_64.rpm $rpmbuild/RPMS/x86_64/realXtend-Tundra-$VER-fc13.x86_64-$TIMESTAMP.rpm	
 fi
 
 
