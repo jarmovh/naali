@@ -59,16 +59,16 @@ cd ..
 
 
 
-#sed -e "s#.x86_64#.$ARCH#g" /builddir/specs/tundra-fedora-0.0-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-0.0-1.spec
+#sed -e "s#.x86_64#.$ARCH#g" /builddir/specs/realxtend-tundra-0.0-1.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-0.0-1.spec
 
-mv /builddir/specs/tundra-fedora-0.0-fc13.spec /builddir/specs/tundra-fedora-$VER-fc13.spec
-mv /builddir/specs/tundra-fedora-scenes-0.0-1.spec /builddir/specs/tundra-fedora-scenes-$VER-1.spec
+mv /builddir/specs/realxtend-tundra-0.0-fc13.spec /builddir/specs/realxtend-tundra-$VER-fc13.spec
+mv /builddir/specs/realxtend-tundra-scenes-0.0-1.spec /builddir/specs/realxtend-tundra-scenes-$VER-1.spec
 
-sed -e "s#/naali-build#$workdir#g" /builddir/specs/tundra-fedora-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-$VER-fc13.spec
-sed -e 's#$HOME##g' /builddir/specs/tundra-fedora-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-$VER-fc13.spec
-sed -e "s#/naali-build#$workdir#g" /builddir/specs/tundra-fedora-scenes-$VER-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-scenes-$VER-1.spec
-sed -e 's#$HOME##g' /builddir/specs/tundra-fedora-scenes-$VER-1.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-scenes-$VER-1.spec
-sed -e "s#0.0#$VER#g" /builddir/specs/tundra-fedora-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/tundra-fedora-$VER-fc13.spec
+sed -e "s#/naali-build#$workdir#g" /builddir/specs/realxtend-tundra-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-$VER-fc13.spec
+sed -e 's#$HOME##g' /builddir/specs/realxtend-tundra-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-$VER-fc13.spec
+sed -e "s#/naali-build#$workdir#g" /builddir/specs/realxtend-tundra-scenes-$VER-1.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-scenes-$VER-1.spec
+sed -e 's#$HOME##g' /builddir/specs/realxtend-tundra-scenes-$VER-1.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-scenes-$VER-1.spec
+sed -e "s#0.0#$VER#g" /builddir/specs/realxtend-tundra-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-$VER-fc13.spec
 
 mkdir -p $packets/lib $packets/include $packets/../rpms
 mkdir -p $rpmbuild/SPECS $rpmbuild/SOURCES $doneflags
@@ -101,11 +101,11 @@ cd $naalidir/bin/
 chmod 755 run-server.sh
 chmod 755 run-viewer.sh
 
-rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/tundra-fedora-scenes-$VER-1.spec
-rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/tundra-fedora-$VER-fc13.spec
+rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/realxtend-tundra-scenes-$VER-1.spec
+rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/realxtend-tundra-$VER-fc13.spec
 
 if [ $USESTAMP ]; then
-	mv $rpmbuild/RPMS/x86_64/Tundra-Fedora-$VER-fc13.x86_64.rpm $rpmbuild/RPMS/x86_64/Tundra-Fedora-$VER-fc13.x86_64-$TIMESTAMP.rpm	
+	mv $rpmbuild/RPMS/x86_64/realxtend-tundra-$VER-fc13.x86_64.rpm $rpmbuild/RPMS/x86_64/realxtend-tundra-$VER-fc13.x86_64-$TIMESTAMP.rpm	
 fi
 
 
