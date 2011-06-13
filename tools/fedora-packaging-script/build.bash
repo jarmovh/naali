@@ -7,8 +7,8 @@ ARCH=amd64
 FEDORA_RELEASE="fedora-13"
 VER=0.0
 TAG=none
-USESTAMP=false
-SERVER=false
+USESTAMP="false"
+SERVER="false"
 SIGNER="none"
 BRANCH="tundra"
 
@@ -41,12 +41,12 @@ while [ $# -gt 0 ]; do
         ;;
 	-d)
 		VER=$VER.$TIMESTAMP
-		USESTAMP=true;
+		USESTAMP="true";
         echo "Version: $VER"
 		shift
 		;;
 	-s)
-		SERVER=true
+		SERVER="true"
 		shift
 		;;
 	-i)
@@ -173,7 +173,7 @@ sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
 sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
 
 
-if [ $SERVER ]; then
+if [ $SERVER=="true" ]; then
 	cd $WORKDIR
 	sudo chmod 755 upload.bash
 	sudo ./upload.bash $FEDORA_RELEASE

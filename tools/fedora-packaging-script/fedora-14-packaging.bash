@@ -96,7 +96,7 @@ chmod 755 run-viewer.sh
 rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/realxtend-tundra-scenes-$VER-1.spec
 rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/realxtend-tundra-$VER-fc14.spec
 
-if [ $USESTAMP ]; then
+if [ $USESTAMP=="true" ]; then
 	mv $rpmbuild/RPMS/x86_64/realXtend-Tundra-$VER-fc14.x86_64.rpm $rpmbuild/RPMS/x86_64/realXtend-Tundra-$VER-fc14.x86_64-$TIMESTAMP.rpm	
 fi
 
