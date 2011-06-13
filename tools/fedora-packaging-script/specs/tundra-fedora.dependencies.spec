@@ -5,7 +5,7 @@ Release: 1
 Group: Applications/Internet
 Source: tundra-fedora-dependencies.tar.gz
 License: GPL 
-Patch: Tundra-Fedora.patch
+Patch: realXtend-Tundra.patch
 BuildRoot: /opt/tundra/
 
 %description
@@ -16,7 +16,7 @@ Tundra is software to view and host interconnected 3D worlds or "3D internet".
 %build
 
 %install
-cp -r $HOME/rpmbuild/BUILD/bin BUILDROOT/Tundra-Fedora-0.0-1.x86_64/
+cp -r $HOME/rpmbuild/BUILD/bin BUILDROOT/realXtend-Tundra-0.0-1.x86_64/
 
 %clean
 
