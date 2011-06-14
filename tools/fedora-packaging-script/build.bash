@@ -181,7 +181,7 @@ if [ $SERVER=="true" ]; then
 fi
 
 #fuser -km $INSTALL_DIR/proc
-sudo umount -f $INSTALL_DIR/proc
+sudo umount -f $BUILDDIR/proc
 
 
 
