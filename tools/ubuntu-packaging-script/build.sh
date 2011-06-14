@@ -153,6 +153,7 @@ cd $INSTALL_DIR/$REX_DIR/naali
 
 sudo git remote add -f upstream git://github.com/realXtend/naali.git
 sudo git checkout $BRANCH
+sudo git pull git://github.com/jarmovh/naali.git $BRANCH
 
 if [ $BRANCH == "master" ];
 then
