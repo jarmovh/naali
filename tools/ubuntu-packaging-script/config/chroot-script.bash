@@ -124,7 +124,7 @@ chmod -R a+rX $PACKAGE_NAME-$BRANCH-$VER-$ARCH
 dpkg -b  $PACKAGE_NAME-$BRANCH-$VER-$ARCH
 errorCheck "Check for error with dpkg"
 
-if [ $SERVER ]; then
+if [ $SERVER == "true" ]; then
 	mv $PACKAGE_NAME-$BRANCH-$VER-$ARCH.deb $PACKAGE_NAME-$BRANCH-$VER-$DATE-$BUILDNUMBER-$ARCH.deb
 fi
 

@@ -10,7 +10,7 @@ ARCH=amd64
 LINUX_RELEASE=lucid
 TAG=none
 BUILDNUMBER=0
-SERVER=false
+SERVER="false"
 
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
@@ -39,7 +39,7 @@ while [ $# -gt 0 ]; do
         exit 0
         ;;
 	-s)
-		SERVER=true
+		SERVER="true"
 		shift
 		;;
 	-i)
@@ -214,7 +214,7 @@ fi
 sudo chmod -R a+rX $INSTALL_DIR/$REX_DIR/
 sudo mv -f $INSTALL_DIR/$REX_DIR/*.deb ./
 
-if [ $SERVER ]; then	
+if [ $SERVER == "true" ]; then	
 	./upload.bash $LINUX_RELEASE
 	rm *.deb
 fi	
