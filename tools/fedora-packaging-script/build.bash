@@ -176,7 +176,7 @@ sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
 if [ $SERVER=="true" ]; then
 	cd $WORKDIR
 	sudo chmod 755 upload.bash
-	sudo ./upload.bash $FEDORA_RELEASE
+	sudo ./upload.bash $FEDORA_RELEASE $VER realXtend-tundra-$VER-*.rpm
 	rm *.rpm
 fi
 
