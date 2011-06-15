@@ -1,0 +1,3 @@
+#!/bin/bash
+gconftool-2 -u /desktop/gnome/url-handlers/tundra/command
+gconftool-2 -u /desktop/gnome/url-handlers/tundra/enabled
