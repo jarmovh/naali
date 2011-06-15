@@ -37,4 +37,12 @@ chmod 755 -R $HOME/rpmbuild/BUILDROOT/realXtend-Tundra-0.0-fc14.x86_64/*
 
 %changelog
 
+%post
+gconftool-2 -s /desktop/gnome/url-handlers/tundra/command '/opt/realXtend/run-viewer.sh' --type String
+gconftool-2 -s /desktop/gnome/url-handlers/tundra/enabled --type Boolean true
+
+%postun
+gconftool-2 -u /desktop/gnome/url-handlers/tundra/command
+gconftool-2 -u /desktop/gnome/url-handlers/tundra/enabled
+
 
