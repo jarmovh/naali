@@ -5,7 +5,7 @@ Release: fc14
 License: GPL
 Group: Applications/Internet
 BuildRoot: /opt/realXtend/
-Requires: boost-date-time, boost-filesystem, boost-thread, boost-regex , boost-program-options, poco-foundation, poco-net, poco-util, openal-soft, ogre, openjpeg-libs, boost-test, gnutls, qtscriptgenerator, qtscriptbindings, xmlrpc-epi
+Requires: boost-date-time, boost-filesystem, boost-thread, boost-regex , boost-program-options, poco-foundation, poco-net, poco-util, openal-soft, ogre, openjpeg-libs, boost-test, gnutls, qtscriptgenerator, qtscriptbindings, xmlrpc-epi, libogg
 %description
 Tundra is software to view and host interconnected 3D worlds or "3D internet".
 
