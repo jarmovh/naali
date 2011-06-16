@@ -143,17 +143,16 @@ sudo mkdir -p $INSTALL_DIR/$REX_DIR log
 sudo mount --bind /proc $INSTALL_DIR/proc
 
 #CREATE LOCAL COPY OF NAALI.GIT
-if [ ! -d $INSTALL_DIR/$REX_DIR/naali ];
-then
-	sudo git clone ../../. $INSTALL_DIR/$REX_DIR/naali
-fi
+sudo git stash
+sudo git checkout $BRANCH
+sudo git pull git://github.com/jarmovh/naali.git $BRANCH
+sudo git clone ../../. $INSTALL_DIR/$REX_DIR/naali
+
 
 sudo chmod 755 $INSTALL_DIR $INSTALL_DIR/$REX_DIR $INSTALL_DIR/$REX_DIR/naali
 cd $INSTALL_DIR/$REX_DIR/naali
 
-sudo git remote add -f upstream git://github.com/realXtend/naali.git
-sudo git checkout $BRANCH
-sudo git pull git://github.com/jarmovh/naali.git $BRANCH
+
 
 if [ $BRANCH == "master" ];
 then
