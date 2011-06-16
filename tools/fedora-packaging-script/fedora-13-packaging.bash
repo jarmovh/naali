@@ -2,6 +2,7 @@
 
 # Script to build naali and dependencies for Fedora 13
 # Creates rpm packages from deps for easy installation.
+# This script gets executed by build.bash
 
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
@@ -107,5 +108,6 @@ rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/re
 if [ $USESTAMP=="true" ]; then
 	mv $rpmbuild/RPMS/x86_64/realXtend-Tundra-$VER-fc13.x86_64.rpm $rpmbuild/RPMS/x86_64/realXtend-Tundra-$VER-fc13.x86_64-$TIMESTAMP.rpm	
 fi
+
 
 

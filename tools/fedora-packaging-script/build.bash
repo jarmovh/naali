@@ -164,6 +164,8 @@ sudo git pull git://github.com/jarmovh/naali.git $BRANCH
 sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
 errorCheck "Problem when cloning git"
 
+VER=`grep "Tundra" ../../Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
+
 sudo mount --bind /proc $BUILDDIR/proc
 
 sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER $TAG $USESTAMP | tee log/$TIMESTAMP.log
