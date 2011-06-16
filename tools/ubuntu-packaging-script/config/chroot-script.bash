@@ -69,9 +69,9 @@ sed '/Version/c \Version: '$VER'' /$REX_DIR/config/control_$BRANCH > tmpfile ; m
 
 if [ $LINUX_RELEASE == "natty" ];
 then
-	sed '/Depends/c \Depends: libboost-date-time1.42.0 (>= 1.42.0), libboost-filesystem1.42.0 (>= 1.42.0), libboost-thread1.42.0 (>= 1.42.0), libboost-regex1.42.0 (>= 1.42.0), libboost-program-options1.42.0 (>= 1.42.0), libpocofoundation9 (>= 1.3.4), libpoconet9 (>= 1.3.4), libpocoutil9 (>= 1.3.4), libqt4-script (>= 4.6.1), libqt4-webkit (>= 4.6.1), libqt4-scripttools (>= 4.6.1), libopenal1 (>= 1.1.0), libogremain-1.6.4 (>= 1.6.1), libopenjpeg2 (>= 1.3), libxmlrpc-epi0, libboost-test1.42.0 (>=1.42.0), libcurl3-gnutls, libqtscript4-uitools, libqtscript4-gui, libqtscript4-webkit, libqt4-webkit, libqt4-svg, libqt4-sql, python2.7, libqt4-xmlpatterns, libpython2.7' /$REX_DIR/config/control_$BRANCH > tmpfile ; mv tmpfile /$REX_DIR/config/control_$BRANCH
+	sed '/Depends/c \Depends: libboost-date-time1.42.0 (>= 1.42.0), libboost-filesystem1.42.0 (>= 1.42.0), libboost-thread1.42.0 (>= 1.42.0), libboost-regex1.42.0 (>= 1.42.0), libboost-program-options1.42.0 (>= 1.42.0), libpocofoundation9 (>= 1.3.4), libpoconet9 (>= 1.3.4), libpocoutil9 (>= 1.3.4), libqt4-script (>= 4.6.1), libqt4-webkit (>= 4.6.1), libqt4-scripttools (>= 4.6.1), libopenal1 (>= 1.1.0), libogremain-1.6.4 (>= 1.6.1), libopenjpeg2 (>= 1.3), libxmlrpc-epi0, libboost-test1.42.0 (>=1.42.0), libcurl3-gnutls, libqtscript4-uitools, libqtscript4-gui, libqtscript4-webkit, libqt4-webkit, libqt4-svg, libqt4-sql, python2.7, libqt4-xmlpatterns, libpython2.7, libogg0 (>=1.1.4)' /$REX_DIR/config/control_$BRANCH > tmpfile ; mv tmpfile /$REX_DIR/config/control_$BRANCH
 else
-	sed '/Depends/c \Depends: libboost-date-time1.40.0 (>= 1.40.0), libboost-filesystem1.40.0 (>= 1.40.0), libboost-thread1.40.0 (>= 1.40.0), libboost-regex1.40.0 (>= 1.40.0), libboost-program-options1.40.0 (>= 1.40.0), libpocofoundation9 (>= 1.3.4), libpoconet9 (>= 1.3.4), libpocoutil9 (>= 1.3.4), libqt4-script (>= 4.6.1), libqt4-webkit (>= 4.6.1), libqt4-scripttools (>= 4.6.1), libopenal1 (>= 1.1.0), libogremain-1.6.4 (>= 1.6.1), libopenjpeg2 (>= 1.3), libxmlrpc-epi0, libboost-test1.40.0 (>=1.40.0), libcurl3-gnutls, libqtscript4-uitools' /$REX_DIR/config/control_$BRANCH > tmpfile ; mv tmpfile /$REX_DIR/config/control_$BRANCH
+	sed '/Depends/c \Depends: libboost-date-time1.40.0 (>= 1.40.0), libboost-filesystem1.40.0 (>= 1.40.0), libboost-thread1.40.0 (>= 1.40.0), libboost-regex1.40.0 (>= 1.40.0), libboost-program-options1.40.0 (>= 1.40.0), libpocofoundation9 (>= 1.3.4), libpoconet9 (>= 1.3.4), libpocoutil9 (>= 1.3.4), libqt4-script (>= 4.6.1), libqt4-webkit (>= 4.6.1), libqt4-scripttools (>= 4.6.1), libopenal1 (>= 1.1.0), libogremain-1.6.4 (>= 1.6.1), libopenjpeg2 (>= 1.3), libxmlrpc-epi0, libboost-test1.40.0 (>=1.40.0), libcurl3-gnutls, libqtscript4-uitools, libogg0 (>=1.1.4)' /$REX_DIR/config/control_$BRANCH > tmpfile ; mv tmpfile /$REX_DIR/config/control_$BRANCH
 fi
 
 #CREATE STRUCTURE NEEDED FOR DEB PACKAGE && USE READY-MADE CONTROL FILE && DESKTOP ICON
@@ -95,6 +95,9 @@ cp /$REX_DIR/config/run-linux_${BRANCH}_viewer.sh /$REX_DIR/$PACKAGE_NAME-$BRANC
 cp /$REX_DIR/config/control_$BRANCH /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/control
 cp /$REX_DIR/config/postinst /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/postinst
 cp /$REX_DIR/config/postrm /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/postrm
+
+chmod 555 /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/postinst
+chmod 555 /$REX_DIR/config/postrm /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/postrm
 
 #WE NEED TO REMOVE -g SWITCH FROM THE BASH SCRIPT BELOW SINCE WE DON'T NEED DEBUG INFORMATION + FILE SIZE INCREASES DRAMATICALLY
 sed -i 's/ccache g++ -O -g/ccache g++ -O/g' /$REX_DIR/naali/tools/build-ubuntu-deps.bash
