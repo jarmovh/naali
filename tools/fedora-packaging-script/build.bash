@@ -158,7 +158,7 @@ sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r specs $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r usr_tundra $WORKDIR/$BUILDDIR/builddir/
 
-
+sudo git stash
 sudo git checkout $BRANCH
 sudo git pull git://github.com/jarmovh/naali.git $BRANCH
 sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
@@ -180,7 +180,7 @@ if [ $SERVER=="true" ]; then
 	rm *.rpm
 fi
 
-#fuser -km $INSTALL_DIR/proc
+fuser -km $BUILDDIR/proc
 sudo umount -f $BUILDDIR/proc
 
 
