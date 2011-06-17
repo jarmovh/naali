@@ -23,6 +23,7 @@ cp -fr $HOME/naali-build/usr_tundra/* $HOME/rpmbuild/BUILDROOT/realXtend-Tundra-
 
 chmod 755 -R $HOME/rpmbuild/BUILDROOT/realXtend-Tundra-0.0-fc14.x86_64/*
 
+
 %clean
 #rm -rf $RPM_BUILD_ROOT
 
@@ -35,14 +36,13 @@ chmod 755 -R $HOME/rpmbuild/BUILDROOT/realXtend-Tundra-0.0-fc14.x86_64/*
 %doc
 /opt/realXtend/*
 
-%changelog
-
 %post
-gconftool-2 -s /desktop/gnome/url-handlers/tundra/command '/opt/realXtend/run-viewer.sh' --type String
-gconftool-2 -s /desktop/gnome/url-handlers/tundra/enabled --type Boolean true
+/opt/realXtend/postinst
 
 %postun
-gconftool-2 -u /desktop/gnome/url-handlers/tundra/command
-gconftool-2 -u /desktop/gnome/url-handlers/tundra/enabled
+/opt/realXtend/postunist
+
+%changelog
+
 
 
