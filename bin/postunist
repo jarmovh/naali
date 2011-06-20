@@ -1,2 +1,2 @@
-gconftool-2 -u /desktop/gnome/url-handlers/tundra/command ' /opt/realXtend/run-viewer.sh'
+gconftool-2 -u /desktop/gnome/url-handlers/tundra/command '/opt/realXtend/run-viewer.sh'
 gconftool-2 -u /desktop/gnome/url-handlers/tundra/enabled
