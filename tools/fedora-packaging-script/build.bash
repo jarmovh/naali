@@ -1,4 +1,5 @@
 #!/bin/bash
+#This script builds realXtend tundra in chroot enviroment and packages it to rpm package.
 
 WORKDIR=$(pwd)
 BUILDDIR=fedorabuild
@@ -7,8 +8,8 @@ ARCH=amd64
 FEDORA_RELEASE="fedora-13"
 VER=0.0
 TAG=none
-USESTAMP="false"
-SERVER="false"
+USESTAMP="no"
+SERVER="no"
 SIGNER="none"
 BRANCH="tundra"
 
@@ -41,12 +42,12 @@ while [ $# -gt 0 ]; do
         ;;
 	-d)
 		VER=$VER.$TIMESTAMP
-		USESTAMP="true";
+		USESTAMP="set";
         echo "Version: $VER"
 		shift
 		;;
 	-s)
-		SERVER="true"
+		SERVER="set"
 		shift
 		;;
 	-i)
@@ -175,14 +176,13 @@ sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
 sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
 
 
-if [ $SERVER=="true" ]; then
+if [ $SERVER == "set" ]; then
 	cd $WORKDIR
 	sudo chmod 755 upload.bash
-	sudo ./upload.bash $FEDORA_RELEASE $VER realXtend-tundra-$VER-*.rpm
+	sudo ./upload.bash $FEDORA_RELEASE $VER
 	rm *.rpm
 fi
 
-fuser -km $BUILDDIR/proc
 sudo umount -f $BUILDDIR/proc
 
 
