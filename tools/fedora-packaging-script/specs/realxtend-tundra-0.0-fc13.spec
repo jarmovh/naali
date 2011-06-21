@@ -40,5 +40,5 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /opt/realXtend/postinst
 
-%postun
+%preun
 /opt/realXtend/postunist
