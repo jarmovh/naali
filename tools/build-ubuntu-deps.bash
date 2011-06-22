@@ -41,7 +41,7 @@ export CCACHE_DIR=$deps/ccache
 private_ogre=true
 
 if [ x$private_ogre != xtrue ]; then
-   more="$more libogre-dev nvidia-cg-toolkit"
+   more="$more libogre-dev nvidia-cg-toolkit libfreetype6-dev libxaw7-dev"
 fi
 
 if lsb_release -c | egrep -q "lucid|maverick|natty"; then
