@@ -41,7 +41,7 @@ export CCACHE_DIR=$deps/ccache
 private_ogre=true
 
 if [ x$private_ogre != xtrue ]; then
-            more="$more libogre-dev"
+   more="$more libogre-dev"
 fi
 
 if lsb_release -c | egrep -q "lucid|maverick|natty"; then
@@ -52,7 +52,7 @@ if lsb_release -c | egrep -q "lucid|maverick|natty"; then
 	 ccache libqt4-dev python-dev \
 	 freeglut3-dev \
 	 libxmlrpc-epi-dev bison flex libxml2-dev cmake libalut-dev \
-	 liboil0.3-dev mercurial unzip xsltproc libqtscript4-qtbindings
+	 liboil0.3-dev mercurial unzip xsltproc libqtscript4-qtbindings $more
 fi
 	 #python-gtk2-dev libdbus-glib-1-dev \
          #libtelepathy-farsight-dev libnice-dev libgstfarsight0.10-dev \
@@ -143,6 +143,24 @@ else
     touch $tags/$what-done
 fi
 
+if [ x$private_ogre = xtrue ]; then
+    what=ogre
+    if test -f $tags/$what-done; then
+        echo $what is done
+    else
+        cd $build
+        rm -rf $what
+        hg clone http://bitbucket.org/sinbad/$what/ -u v1-8
+        cd $what
+        mkdir -p $what-build
+        cd $what-build
+        cmake .. -DCMAKE_INSTALL_PREFIX=$prefix
+        make -j $nprocs VERBOSE=1
+        make install
+        touch $tags/$what-done
+    fi
+fi
+
 what=Caelum
 if test -f $tags/$what-done; then
     echo $what is done
@@ -164,23 +182,6 @@ else
     touch $tags/$what-done
 fi
 
-if [ x$private_ogre = xtrue ]; then
-    what=ogre
-    if test -f $tags/$what-done; then
-        echo $what is done
-    else
-        cd $build
-        rm -rf $what
-        hg clone http://bitbucket.org/sinbad/$what/ -u v1-8
-        cd $what
-        mkdir -p $what-build
-        cd $what-build
-        cmake .. -DCMAKE_INSTALL_PREFIX=$prefix
-        make -j $nprocs VERBOSE=1
-        make install
-        touch $tags/$what-done
-    fi
-fi
 
 cd $build
 what=PythonQt
