@@ -35,13 +35,19 @@ export CC="ccache gcc"
 export CXX="ccache g++"
 export CCACHE_DIR=$deps/ccache
 
+private_ogre=true
+
+if [ x$private_ogre != xtrue ]; then
+            more="$more ogre-devel"
+fi
+
 yum groupinstall -y "Development Tools"
 yum install -y scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
-libcurl-devel expat-devel phonon-devel ogre-devel boost-devel poco-devel \
+libcurl-devel expat-devel phonon-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
 wget qt qt4 mercurial unzip libxslt qtscriptbindings freeglut-devel xmlrpc-epi-devel \
-qt-webkit-devel \
+qt-webkit-devel $more\
 
 if test -f /usr/bin/qmake; then
 	echo qmake exists
@@ -126,6 +132,24 @@ else
     touch $tags/$what-done
 fi
 
+if [ x$private_ogre = xtrue ]; then
+    what=ogre
+    if test -f $tags/$what-done; then
+        echo $what is done
+    else
+        cd $build
+        rm -rf $what
+        hg clone http://bitbucket.org/sinbad/$what/ -u v1-8
+        cd $what
+        mkdir -p $what-build
+        cd $what-build
+        cmake .. -DCMAKE_INSTALL_PREFIX=$prefix
+        make -j $nprocs VERBOSE=1
+        make install
+        touch $tags/$what-done
+    fi
+fi
+
 cd $build
 what=PythonQt
 ver=2.0.1
@@ -200,6 +224,6 @@ chmod +x ccache-g++-wrapper
 NAALI_DEP_PATH=$prefix cmake -DCMAKE_CXX_FLAGS:STRING="-lrt -lboost_filesystem -lboost_thread-mt" -DCMAKE_CXX_COMPILER="$viewer/ccache-g++-wrapper" .
 make -j $nprocs VERBOSE=1
 
-sed '/PluginFolder/c \PluginFolder=/usr/lib64/OGRE' $viewer/bin/plugins-unix.cfg > tmpfile ; mv tmpfile /$viewer/bin/plugins-unix.cfg
+sed '/PluginFolder/c \PluginFolder=lib/OGRE' $viewer/bin/plugins-unix.cfg > tmpfile ; mv tmpfile /$viewer/bin/plugins-unix.cfg
 
 

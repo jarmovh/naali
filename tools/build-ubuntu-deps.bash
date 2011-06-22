@@ -38,11 +38,17 @@ export CC="ccache gcc"
 export CXX="ccache g++"
 export CCACHE_DIR=$deps/ccache
 
+private_ogre=true
+
+if [ x$private_ogre != xtrue ]; then
+            more="$more libogre-dev"
+fi
+
 if lsb_release -c | egrep -q "lucid|maverick|natty"; then
         which aptitude > /dev/null 2>&1 || sudo apt-get install aptitude
 	sudo aptitude -y install scons python-dev libogg-dev libvorbis-dev \
 	 libopenjpeg-dev libcurl4-gnutls-dev libexpat1-dev libphonon-dev \
-	 build-essential g++ libogre-dev libboost-all-dev libpoco-dev \
+	 build-essential g++ libboost-all-dev libpoco-dev \
 	 ccache libqt4-dev python-dev \
 	 freeglut3-dev \
 	 libxmlrpc-epi-dev bison flex libxml2-dev cmake libalut-dev \
@@ -156,6 +162,24 @@ else
     cp lib$what.a $prefix/lib/
     cp main/include/* $prefix/include/
     touch $tags/$what-done
+fi
+
+if [ x$private_ogre = xtrue ]; then
+    what=ogre
+    if test -f $tags/$what-done; then
+        echo $what is done
+    else
+        cd $build
+        rm -rf $what
+        hg clone http://bitbucket.org/sinbad/$what/ -u v1-8
+        cd $what
+        mkdir -p $what-build
+        cd $what-build
+        cmake .. -DCMAKE_INSTALL_PREFIX=$prefix
+        make -j $nprocs VERBOSE=1
+        make install
+        touch $tags/$what-done
+    fi
 fi
 
 cd $build
