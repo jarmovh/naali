@@ -38,7 +38,7 @@ export CCACHE_DIR=$deps/ccache
 private_ogre=true
 
 if [ x$private_ogre != xtrue ]; then
-            more="$more ogre-devel Cg libXaw freetype-devel"
+            more="$more ogre-devel Cg libXaw libXaw-devel freetype-devel"
 fi
 
 yum groupinstall -y "Development Tools"
