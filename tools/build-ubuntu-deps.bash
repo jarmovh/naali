@@ -151,7 +151,7 @@ if [ x$private_ogre = xtrue ]; then
     else
         cd $build
         rm -rf $what
-        hg clone http://bitbucket.org/sinbad/$what/ -u v1-8
+        hg clone http://bitbucket.org/sinbad/$what/ -u v1-7-3
         cd $what
         mkdir -p $what-build
         cd $what-build
