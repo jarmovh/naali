@@ -41,7 +41,7 @@ export CCACHE_DIR=$deps/ccache
 private_ogre=true
 
 if [ x$private_ogre != xtrue ]; then
-   more="$more libogre-dev nvidia-cg-toolkit libfreetype6-dev libxaw7-dev"
+   more="$more libogre-dev"
 fi
 
 if lsb_release -c | egrep -q "lucid|maverick|natty"; then
@@ -52,7 +52,8 @@ if lsb_release -c | egrep -q "lucid|maverick|natty"; then
 	 ccache libqt4-dev python-dev \
 	 freeglut3-dev \
 	 libxmlrpc-epi-dev bison flex libxml2-dev cmake libalut-dev \
-	 liboil0.3-dev mercurial unzip xsltproc libqtscript4-qtbindings $more
+	 liboil0.3-dev mercurial unzip xsltproc libqtscript4-qtbindings \
+	 nvidia-cg-toolkit libfreetype6-dev libxaw7-dev $more
 fi
 	 #python-gtk2-dev libdbus-glib-1-dev \
          #libtelepathy-farsight-dev libnice-dev libgstfarsight0.10-dev \

@@ -38,7 +38,7 @@ export CCACHE_DIR=$deps/ccache
 private_ogre=true
 
 if [ x$private_ogre != xtrue ]; then
-            more="$more ogre-devel Cg libXaw libXaw-devel freetype-devel"
+            more="$more ogre-devel"
 fi
 
 yum groupinstall -y "Development Tools"
@@ -46,7 +46,7 @@ yum install -y scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
 libcurl-devel expat-devel phonon-devel boost-devel poco-devel \
 pygtk2-devel dbus-devel ccache qt-devel telepathy-farsight-devel libnice-devel \
 bison flex libxml2-devel ois-devel cmake freealut-devel liboil-devel pango-devel \
-wget qt qt4 mercurial unzip libxslt qtscriptbindings freeglut-devel $more\
+wget qt qt4 mercurial unzip libxslt qtscriptbindings freeglut-devel Cg libXaw libXaw-devel freetype-devel $more\
 
 if test -f /usr/bin/qmake; then
 	echo qmake exists
