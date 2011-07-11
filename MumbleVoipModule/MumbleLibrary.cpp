@@ -5,11 +5,11 @@
 
 #include "MumbleLibrary.h"
 #include "MumbleMainLoopThread.h"
-#define LIBMUMBLE_BUILDING_DLL // for dll import/export declarations
+#define BUILDING_DLL // for dll import/export declarations
 #define CreateEvent  CreateEventW // for \boost\asio\detail\win_event.hpp and \boost\asio\detail\win_iocp_handle_service.hpp
 #include <mumbleclient/client_lib.h>
 #include <mumbleclient/logging.h>
-#undef LIBMUMBLE_BUILDING_DLL // for dll import/export declarations
+#undef BUILDING_DLL // for dll import/export declarations
 
 #include "MemoryLeakCheck.h"
 
