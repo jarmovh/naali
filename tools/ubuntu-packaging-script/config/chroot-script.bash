@@ -109,11 +109,11 @@ errorCheck "Check for error with build process"
 cp -r /$REX_DIR/naali/bin/* /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH
 
 #FOLLOWING LINES WILL BE REMOVED LATER ON
-#cp /$REX_DIR/naali-deps/build/PythonQt2.0.1/lib/libPythonQt_QtAll.so.1 /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH
-#cp /$REX_DIR/naali-deps/build/PythonQt2.0.1/lib/libPythonQt.so.1 /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH/
-#cp /$REX_DIR/naali-deps/build/qtpropertybrowser-2.5_1-opensource/lib/libQtSolutions_PropertyBrowser-2.5.so.1 /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH
-cp /$REX_DIR/naali-deps/install/lib/OGRE /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH/lib/
-cp /$REX_DIR/naali-deps/install/lib/*.so* /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH/lib/
+cp /$REX_DIR/naali-deps/build/PythonQt2.0.1/lib/libPythonQt_QtAll.so.1 /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH
+cp /$REX_DIR/naali-deps/build/PythonQt2.0.1/lib/libPythonQt.so.1 /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH/
+cp /$REX_DIR/naali-deps/build/qtpropertybrowser-2.5_1-opensource/lib/libQtSolutions_PropertyBrowser-2.5.so.1 /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH
+cp -r /$REX_DIR/naali-deps/install/lib/OGRE /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH/lib/
+cp /$REX_DIR/naali-deps/install/lib/libOgreMain* /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH/modules/core/
 #########################################
 
 #CREATE DEB PACKAGE USING DPKG, BY DEFAULT THE PACKAGE NAME WILL BE THE FOLDER NAME

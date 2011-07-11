@@ -250,3 +250,7 @@ EOF
 chmod +x ccache-g++-wrapper
 NAALI_DEP_PATH=$prefix cmake -DCMAKE_CXX_COMPILER="$viewer/ccache-g++-wrapper" .
 make -j $nprocs VERBOSE=1
+
+if [ x$private_ogre = xtrue ]; then
+sed '/PluginFolder/c \PluginFolder=lib/OGRE' $viewer/bin/plugins-unix.cfg > tmpfile ; mv tmpfile /$viewer/bin/plugins-unix.cfg
+fi
