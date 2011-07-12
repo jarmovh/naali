@@ -54,7 +54,7 @@ if lsb_release -c | egrep -q "lucid|maverick|natty"; then
 	 libxmlrpc-epi-dev bison flex libxml2-dev cmake libalut-dev \
 	 liboil0.3-dev mercurial unzip xsltproc libqtscript4-qtbindings \
 	 nvidia-cg-toolkit libfreetype6-dev libxaw7-dev libois-dev doxygen libcppunit-dev \
-     libzzip-dev libxrandr-dev libfreetype6-dev $more
+     libzzip-dev libxrandr-dev libfreeimage-dev $more
 fi
 	 #python-gtk2-dev libdbus-glib-1-dev \
          #libtelepathy-farsight-dev libnice-dev libgstfarsight0.10-dev \
