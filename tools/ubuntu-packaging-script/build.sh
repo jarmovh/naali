@@ -129,6 +129,12 @@ fi
 set -e
 set -x
 
+if [ 'mount | grep /home/' ]; then
+echo "unmounting /proc"
+sudo umount $INSTALL_DIR/proc
+fi
+
+
 sudo rm -fr $INSTALL_DIR
 
 #CREATE FOLDER FOR DEBOOTSTRAP AND DOWNLOAD IT
