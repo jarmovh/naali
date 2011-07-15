@@ -129,7 +129,9 @@ fi
 set -e
 set -x
 
-if [ 'mount | grep /home/' ]; then
+mount | grep $INSTALL_DIR"/proc" > /dev/null
+if [ $? -eq 0 ]; then
+
 echo "unmounting /proc"
 sudo umount $INSTALL_DIR/proc
 fi
