@@ -141,6 +141,10 @@ if [ ! -d $WORKDIR/rinse ]; then
 	cd $WORKDIR
 fi
 
+if [ 'mount | grep /home/' ]; then
+echo "unmounting /proc"
+sudo umount $INSTALL_DIR/proc
+fi
 
 sudo rm -fr $BUILDDIR
 echo $BUILDDIR
