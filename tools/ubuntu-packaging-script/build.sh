@@ -129,15 +129,14 @@ fi
 set -e
 set -x
 
-sudo mount | grep $INSTALL_DIR"/proc" > /dev/null
+mount | grep "$INSTALL_DIR/proc" > /dev/null
 if [ $? -eq 0 ]; then
-
 echo "unmounting /proc"
-sudo umount $INSTALL_DIR/proc
+    sudo umount $INSTALL_DIR/proc
+    sudo rm -fr $INSTALL_DIR
+else
+    sudo rm -fr $INSTALL_DIR
 fi
-
-
-sudo rm -fr $INSTALL_DIR
 
 #CREATE FOLDER FOR DEBOOTSTRAP AND DOWNLOAD IT
 #apt-get -y install debootstrap git-core fakeroot fakechroot

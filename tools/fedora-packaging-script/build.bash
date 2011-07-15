@@ -141,14 +141,16 @@ if [ ! -d $WORKDIR/rinse ]; then
 	cd $WORKDIR
 fi
 
-sudo mount | grep $BUILDDIR"/proc" > /dev/null
+mount | grep "$BUILDDIR/proc" > /dev/null
 if [ $? -eq 0 ]; then
-
 echo "unmounting /proc"
-sudo umount $BUILDDIR/proc
+    sudo umount $BUILDDIR/proc
+    sudo rm -fr $BUILDDIR
+else
+    sudo rm -fr $BUILDDIR
 fi
 
-sudo rm -fr $BUILDDIR
+
 echo $BUILDDIR
 
 sudo rinse --arch=$ARCH --directory=$BUILDDIR --distribution=$FEDORA_RELEASE
