@@ -126,17 +126,19 @@ then
 	BRANCH=develop
 fi
 
+
+
+mount | grep "/proc on" 
+if [ $? -eq 0 ]; then
+    echo "unmounting /proc"
+    TOUMOUNT=`mount | grep "/proc on" | awk '{ print $3 }'`
+    sudo umount $TOUMOUNT
+fi
+
+sudo rm -fr $INSTALL_DIR
+
 set -e
 set -x
-
-mount | grep "$INSTALL_DIR/proc" > /dev/null
-if [ $? -eq 0 ]; then
-echo "unmounting /proc"
-    sudo umount $INSTALL_DIR/proc
-    sudo rm -fr $INSTALL_DIR
-else
-    sudo rm -fr $INSTALL_DIR
-fi
 
 #CREATE FOLDER FOR DEBOOTSTRAP AND DOWNLOAD IT
 #apt-get -y install debootstrap git-core fakeroot fakechroot
