@@ -129,7 +129,7 @@ fi
 set -e
 set -x
 
-mount | grep $INSTALL_DIR"/proc" > /dev/null
+sudo mount | grep $INSTALL_DIR"/proc" > /dev/null
 if [ $? -eq 0 ]; then
 
 echo "unmounting /proc"

@@ -141,7 +141,7 @@ if [ ! -d $WORKDIR/rinse ]; then
 	cd $WORKDIR
 fi
 
-mount | grep $BUILDDIR"/proc" > /dev/null
+sudo mount | grep $BUILDDIR"/proc" > /dev/null
 if [ $? -eq 0 ]; then
 
 echo "unmounting /proc"
