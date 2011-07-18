@@ -148,8 +148,8 @@ if [ $? -eq 0 ]; then
     sudo umount $TOUMOUNT
 fi
 
-set -e
-set -x
+#set -e
+#set -x
 
 sudo rm -fr $BUILDDIR
 echo $BUILDDIR
