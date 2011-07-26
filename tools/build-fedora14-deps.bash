@@ -41,6 +41,8 @@ if [ x$private_ogre != xtrue ]; then
             more="$more ogre-devel"
 fi
 
+yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-stable.noarch.rpm
+
 yum groupinstall -y "Development Tools"
 yum install -y scons libogg-devel python-devel libvorbis-devel openjpeg-devel \
 libcurl-devel expat-devel phonon-devel boost-devel poco-devel \
