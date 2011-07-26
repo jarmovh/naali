@@ -94,7 +94,7 @@ cp -r /$REX_DIR/config/usr_$BRANCH /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/us
 
 cp /$REX_DIR/config/run-linux_${BRANCH}_viewer.sh /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/$FINAL_INSTALL_DIR-$BRANCH/run-viewer.sh
 cp /$REX_DIR/config/control_$BRANCH /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/control
-cp /$REX_DIR/config/postinst /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/postinst
+#cp /$REX_DIR/config/postinst /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/postinst
 cp /$REX_DIR/config/postrm /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/postrm
 
 chmod 555 /$REX_DIR/$PACKAGE_NAME-$BRANCH-$VER-$ARCH/DEBIAN/postinst
