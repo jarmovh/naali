@@ -134,12 +134,15 @@ done
 
 BUILDDIR=$FEDORA_RELEASE-$ARCH
 
+#Get rinse to be used for builds
 if [ ! -d $WORKDIR/rinse ]; then
 	git clone git://gitorious.org/rinse/rinse.git ./rinse
 	cd rinse
 	sudo make install
 	cd $WORKDIR
 fi
+
+#Check if proc is mounted and umount if true
 
 mount | grep "/proc on" 
 if [ $? -eq 0 ]; then
@@ -154,14 +157,17 @@ fi
 sudo rm -fr $BUILDDIR
 echo $BUILDDIR
 
+#Get Fedora filesystem to be used for builds
 sudo rinse --arch=$ARCH --directory=$BUILDDIR --distribution=$FEDORA_RELEASE
 
+#Copy packages used in previous builds to save bandwith and time
 if [ -d $WORKDIR/rpmcache-$FEDORA_RELEASE ]; then
 	sudo cp -r $WORKDIR/rpmcache-$FEDORA_RELEASE/* $WORKDIR/$BUILDDIR/var/cache/
 else
 	sudo mkdir $WORKDIR/rpmcache-$FEDORA_RELEASE
 fi
 
+#Init directories and start build
 sudo mkdir $WORKDIR/$BUILDDIR/builddir
 sudo mkdir $WORKDIR/$BUILDDIR/builddir/naali
 sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/
@@ -180,11 +186,12 @@ sudo mount --bind /proc $BUILDDIR/proc
 
 sudo chroot $BUILDDIR builddir/$FEDORA_RELEASE-packaging.bash $ARCH $TIMESTAMP $VER $TAG $USESTAMP | tee log/$TIMESTAMP.log
 
+#Copy created packages from chrooted environment and backup used Fedora packages
 sudo cp $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm $WORKDIR
 sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
 sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
 
-
+#If $SERVER is set, use upload.bash script to upload files to server
 if [ $SERVER == "set" ]; then
 	cd $WORKDIR
 	sudo chmod 755 upload.bash

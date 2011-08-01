@@ -37,8 +37,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 
-%post
-/opt/realXtend/postinst
 
 %preun
 /opt/realXtend/postunist

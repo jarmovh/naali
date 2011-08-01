@@ -53,37 +53,39 @@ else
 	VER=`grep "Tundra" $naalidir/Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
 fi
 
-#git remote add upstream git://github.com/realXtend/naali.git
-#git fetch upstream
-#git merge -s recursive remotes/upstream/tundra
 cd ..
 
-
-
-#sed -e "s#.x86_64#.$ARCH#g" /builddir/specs/realxtend-tundra-0.0-1.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-0.0-1.spec
-
+#Rename .spec files to match the name of package to be created
 mv /builddir/specs/realxtend-tundra-0.0-fc13.spec /builddir/specs/realxtend-tundra-$VER-fc13.spec
 mv /builddir/specs/realxtend-tundra-scenes-0.0-1.spec /builddir/specs/realxtend-tundra-scenes-$VER-1.spec
 
+#Edit some lines to match the package to be created
 sed -e "s#/naali-build#$workdir#g" /builddir/specs/realxtend-tundra-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-$VER-fc13.spec
 sed -e 's#$HOME##g' /builddir/specs/realxtend-tundra-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-$VER-fc13.spec
 sed -e "s#/naali-build#$workdir#g" /builddir/specs/realxtend-tundra-scenes-$VER-1.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-scenes-$VER-1.spec
 sed -e 's#$HOME##g' /builddir/specs/realxtend-tundra-scenes-$VER-1.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-scenes-$VER-1.spec
 sed -e "s#0.0#$VER#g" /builddir/specs/realxtend-tundra-$VER-fc13.spec > tmpfile ; mv tmpfile /builddir/specs/realxtend-tundra-$VER-fc13.spec
 
+#rpm build init
 mkdir -p $packets/lib $packets/include $packets/../rpms
 mkdir -p $rpmbuild/SPECS $rpmbuild/SOURCES $doneflags
 cp /builddir/specs/* $rpmbuild/SPECS
 
 cd $naalidir/tools
 
+#remove debug data from builds
 sed -i 's/ccache g++ -O -g /ccache g++ -O /' $naalidir/tools/build-fedora13-deps.bash
 
+#build
 ./build-fedora13-deps.bash
 errorCheck "Check for error with build process"
 
+#Create startup scripts
 cat > $naalidir/bin/run-viewer.sh << EOF
 #!/bin/bash
+gconftool-2 --set /desktop/gnome/url-handlers/tundra/command '/opt/realXtend/run-viewer.sh' --type String
+gconftool-2 --set /desktop/gnome/url-handlers/tundra/enabled --type Boolean true
+
 cd /opt/realXtend
 export LD_LIBRARY_PATH=.:./modules/core:./lib
 ./viewer "$@"
@@ -102,9 +104,11 @@ cd $naalidir/bin/
 chmod 755 run-server.sh
 chmod 755 run-viewer.sh
 
+#Create rpm packages
 rpmbuild -bb  -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/realxtend-tundra-scenes-$VER-1.spec
 rpmbuild -bb -vv --target x86_64 --define '_topdir /rpmbuild' $rpmbuild/SPECS/realxtend-tundra-$VER-fc13.spec
 
+#Add timestamp if $USESTAMP is set
 if [ $USESTAMP=="set" ]; then
 	mv $rpmbuild/RPMS/x86_64/realXtend-Tundra-$VER-fc13.x86_64.rpm $rpmbuild/RPMS/x86_64/realXtend-Tundra-$VER-$TIMESTAMP-fc13.x86_64.rpm	
 fi

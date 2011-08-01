@@ -36,8 +36,6 @@ chmod 755 -R $HOME/rpmbuild/BUILDROOT/realXtend-Tundra-0.0-fc14.x86_64/*
 %doc
 /opt/realXtend/*
 
-%post
-/opt/realXtend/postinst
 
 %preun
 /opt/realXtend/postunist

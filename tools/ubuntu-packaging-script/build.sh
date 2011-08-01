@@ -224,6 +224,7 @@ fi
 sudo chmod -R a+rX $INSTALL_DIR/$REX_DIR/
 sudo mv -f $INSTALL_DIR/$REX_DIR/*.deb ./
 
+#IF SERVER IS SET UPLOAD CREATED PACKAGES TO SERVER
 if [ $SERVER == "true" ]; then	
 	./upload.bash $LINUX_RELEASE $VER *$VER*.deb
 	rm *.deb
