@@ -12,6 +12,8 @@ LINUX_RELEASE=lucid
 TAG=none
 BUILDNUMBER=0
 SERVER="false"
+TIMESTAMP=`date '+%y%m%d'`
+USESTAMP="no"
 
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
@@ -23,7 +25,7 @@ function errorCheck {
     fi
 }
 
-USAGE="\nUsage: $0 [--help] [-i install directory] [-b branch] [-t tag] [-a architecture] [-l linux release] [-s server mode] [-s server mode] 
+USAGE="\nUsage: $0 [--help] [-i install directory] [-b branch] [-t tag] [-a architecture] [-l linux release] [-s server mode] [-d use timestamp]
 		\nBranch is mandatory, select naali or tundra      	
 		\nDefault settings 
       	\n   Install directory: $INSTALL_DIR
@@ -41,6 +43,11 @@ while [ $# -gt 0 ]; do
         ;;
 	-s)
 		SERVER="true"
+		shift
+		;;
+    -d)
+		USESTAMP="set";
+        echo "Version: $VER"
 		shift
 		;;
 	-i)
@@ -63,17 +70,6 @@ while [ $# -gt 0 ]; do
 	    BRANCH=$1
             echo $BRANCH
         echo "Branch option: $BRANCH"
-	    shift;
-        ;;
-	-n)
-	    shift
-        if [ -z $1 ]; then
-	        echo "-b option given, but no param for it"
-		    exit 1
-	    fi
-	    BUILDNUMBER=$1
-            echo $BRANCH
-        echo "Buildnumber option: $BUILDNUMBER"
 	    shift;
         ;;
 	-t)
@@ -212,7 +208,7 @@ sudo cp -r ./config $INSTALL_DIR/$REX_DIR/config
 
 #CHROOT INTO OUR UBUNTU AND RUN SCRIPT (PARAMETERS BRANCH + VERSION) + DO LOG FILE
 LOGFILE=`date|awk 'OFS="."{print $2,$3,$6,$4}'`
-sudo chroot $INSTALL_DIR $REX_DIR/config/chroot-script.bash $BRANCH $ARCH $REX_DIR $TAG $BUILDNUMBER $VER $LINUX_RELEASE $SERVER 2>&1 | sudo tee ./log/$LOGFILE-$BRANCH-$ARCH.log 
+sudo chroot $INSTALL_DIR $REX_DIR/config/chroot-script.bash $BRANCH $ARCH $REX_DIR $TAG $BUILDNUMBER $VER $USESTAMP $LINUX_RELEASE $SERVER 2>&1 | sudo tee ./log/$LOGFILE-$BRANCH-$ARCH.log 
 
 if [ ! -d ./apt_cache_$ARCH/ ];
 then

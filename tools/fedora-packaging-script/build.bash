@@ -41,7 +41,7 @@ while [ $# -gt 0 ]; do
         exit 0
         ;;
 	-d)
-		VER=$VER.$TIMESTAMP
+		VER=$VER$TIMESTAMP
 		USESTAMP="set";
         echo "Version: $VER"
 		shift
@@ -179,6 +179,11 @@ sudo git checkout $BRANCH
 sudo git pull git://github.com/jarmovh/naali.git $BRANCH
 sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
 errorCheck "Problem when cloning git"
+
+if [ $BRANCH == "master" ];
+then
+	BRANCH=tundra
+fi
 
 VER=`grep "Tundra" ../../Viewer/main.cpp | cut -d 'v' -f2 -|cut -d '-' -f 1`
 
