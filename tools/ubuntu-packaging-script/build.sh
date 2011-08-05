@@ -11,9 +11,9 @@ ARCH=amd64
 LINUX_RELEASE=lucid
 TAG=none
 BUILDNUMBER=0
-SERVER="false"
+SERVER=false
 TIMESTAMP=`date '+%y%m%d'`
-USESTAMP="no"
+USESTAMP=false
 
 #IN CASE ERROR HAPPENS, $?-VARIABLE IS != 0
 function errorCheck {
@@ -42,11 +42,11 @@ while [ $# -gt 0 ]; do
         exit 0
         ;;
 	-s)
-		SERVER="true"
+		SERVER=true
 		shift
 		;;
     -d)
-		USESTAMP="set";
+		USESTAMP=true
         echo "Version: $VER"
 		shift
 		;;
@@ -221,7 +221,7 @@ sudo chmod -R a+rX $INSTALL_DIR/$REX_DIR/
 sudo mv -f $INSTALL_DIR/$REX_DIR/*.deb ./
 
 #IF SERVER IS SET UPLOAD CREATED PACKAGES TO SERVER
-if [ $SERVER == "true" ]; then	
+if [ x$SERVER == xtrue ]; then	
 	./upload.bash $LINUX_RELEASE $VER *$VER*.deb
 	rm *.deb
 fi	

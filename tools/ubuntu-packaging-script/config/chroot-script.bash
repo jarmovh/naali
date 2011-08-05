@@ -135,7 +135,7 @@ dpkg -b  $PACKAGE_NAME-$BRANCH-$VER-$ARCH
 errorCheck "Check for error with dpkg"
 
 #IF $TIMESTAMP IS SET ADD TIMESTAMP TO NAME
-if [ $USESTAMP == "set" ]; then
+if [ x$USESTAMP == xset ]; then
 	mv $PACKAGE_NAME-$BRANCH-$VER-$ARCH.deb $PACKAGE_NAME-$BRANCH-$VER-$ARCH.deb
 fi
 

@@ -8,8 +8,8 @@ ARCH=amd64
 FEDORA_RELEASE="fedora-13"
 VER=0.0
 TAG=none
-USESTAMP="no"
-SERVER="no"
+USESTAMP=xfalse
+SERVER=xfalse
 SIGNER="none"
 BRANCH="tundra"
 
@@ -42,12 +42,12 @@ while [ $# -gt 0 ]; do
         ;;
 	-d)
 		VER=$VER$TIMESTAMP
-		USESTAMP="set";
+		USESTAMP=true;
         echo "Version: $VER"
 		shift
 		;;
 	-s)
-		SERVER="set"
+		SERVER=true
 		shift
 		;;
 	-i)
@@ -197,7 +197,7 @@ sudo rm $WORKDIR/$BUILDDIR/rpmbuild/RPMS/x86_64/*.rpm
 sudo cp -r $WORKDIR/$BUILDDIR/var/cache/yum/ $WORKDIR/rpmcache-$FEDORA_RELEASE
 
 #If $SERVER is set, use upload.bash script to upload files to server
-if [ $SERVER == "set" ]; then
+if [ x$SERVER == xtrue ]; then
 	cd $WORKDIR
 	sudo chmod 755 upload.bash
 	sudo ./upload.bash $FEDORA_RELEASE $VER
