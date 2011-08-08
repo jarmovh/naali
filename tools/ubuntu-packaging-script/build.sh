@@ -149,10 +149,23 @@ sudo mkdir -p $INSTALL_DIR/$REX_DIR log
 sudo mount --bind /proc $INSTALL_DIR/proc
 
 #CREATE LOCAL COPY OF NAALI.GIT
-sudo git stash
-sudo git checkout $BRANCH
-sudo git pull git://github.com/jarmovh/naali.git $BRANCH
-sudo git clone ../../. $INSTALL_DIR/$REX_DIR/naali
+if [ $BRANCH == "tundra" ]; then
+    sudo git stash
+    sudo git checkout $BRANCH
+    sudo git pull git://github.com/jarmovh/naali.git $BRANCH
+    sudo git clone ../../. $INSTALL_DIR/$REX_DIR/naali
+fi
+
+if [ $BRANCH == "master" ]; then
+    cd ../../../master
+    sudo git stash
+    sudo git checkout $BRANCH
+    sudo git pull git://github.com/jarmovh/naali.git $BRANCH
+    sudo git clone $INSTALL_DIR/$REX_DIR/naali
+    cd -
+fi
+
+
 
 
 sudo chmod 755 $INSTALL_DIR $INSTALL_DIR/$REX_DIR $INSTALL_DIR/$REX_DIR/naali

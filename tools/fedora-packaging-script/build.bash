@@ -174,11 +174,24 @@ sudo cp $FEDORA_RELEASE-packaging.bash $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r specs $WORKDIR/$BUILDDIR/builddir/
 sudo cp -r usr_tundra $WORKDIR/$BUILDDIR/builddir/
 
-sudo git stash
-sudo git checkout $BRANCH
-sudo git pull git://github.com/jarmovh/naali.git $BRANCH
-sudo git clone ../../ $WORKDIR/$BUILDDIR/builddir/naali
-errorCheck "Problem when cloning git"
+
+#Get latest changes from git
+if [ $BRANCH == "tundra" ]; then
+    sudo git stash
+    sudo git checkout $BRANCH
+    sudo git pull git://github.com/jarmovh/naali.git $BRANCH
+    sudo git clone ../../. $WORKDIR/$BUILDDIR/builddir/naali
+fi
+
+if [ $BRANCH == "master" ]; then
+    cd ../../../master
+    sudo git stash
+    sudo git checkout $BRANCH
+    sudo git pull git://github.com/jarmovh/naali.git $BRANCH
+    sudo git clone $WORKDIR/$BUILDDIR/builddir/naali
+    cd -
+fi
+
 
 if [ $BRANCH == "master" ];
 then
