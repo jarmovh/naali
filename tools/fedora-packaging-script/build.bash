@@ -188,7 +188,7 @@ if [ $BRANCH == "master" ]; then
     sudo git stash
     sudo git checkout $BRANCH
     sudo git pull git://github.com/jarmovh/naali.git $BRANCH
-    sudo git clone $WORKDIR/$BUILDDIR/builddir/naali
+    sudo git clone . $WORKDIR/$BUILDDIR/builddir/naali
     cd -
 fi
 

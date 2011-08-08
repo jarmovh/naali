@@ -161,7 +161,7 @@ if [ $BRANCH == "master" ]; then
     sudo git stash
     sudo git checkout $BRANCH
     sudo git pull git://github.com/jarmovh/naali.git $BRANCH
-    sudo git clone $INSTALL_DIR/$REX_DIR/naali
+    sudo git clone . $INSTALL_DIR/$REX_DIR/naali
     cd -
 fi
 
