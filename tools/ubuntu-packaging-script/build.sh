@@ -221,7 +221,7 @@ sudo cp -r ./config $INSTALL_DIR/$REX_DIR/config
 
 #CHROOT INTO OUR UBUNTU AND RUN SCRIPT (PARAMETERS BRANCH + VERSION) + DO LOG FILE
 LOGFILE=`date|awk 'OFS="."{print $2,$3,$6,$4}'`
-sudo chroot $INSTALL_DIR $REX_DIR/config/chroot-script.bash $BRANCH $ARCH $REX_DIR $TAG $BUILDNUMBER $VER $USESTAMP $LINUX_RELEASE $SERVER 2>&1 | sudo tee ./log/$LOGFILE-$BRANCH-$ARCH.log 
+sudo chroot $INSTALL_DIR $REX_DIR/config/chroot-script.bash $BRANCH $ARCH $REX_DIR $TAG $BUILDNUMBER $VER  $LINUX_RELEASE $SERVER $USESTAMP 2>&1 | sudo tee ./log/$LOGFILE-$BRANCH-$ARCH.log 
 
 if [ ! -d ./apt_cache_$ARCH/ ];
 then
