@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=realXtend Tundra2 viewer
+GenericName=Virtual worlds viewer
+Comment=Browse 3D virtual worlds
+Exec=bash /opt/realxtend-tundra2/run-viewer.sh
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/tundra.png
+Categories=Internet;
+StartupNotify=false
